@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#07030f">
   <meta name="description" content="FLAVOR — rate atmospheric damage across six highly scientific categories.">
-  <title>F L A V O R</title>
+  <title>FLAVOR</title>
 
   <link rel="icon" href="icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -67,7 +67,7 @@
       position:absolute;
       inset:0;
       pointer-events:none;
-      opacity:.15;
+      opacity:.22;
       background:repeating-linear-gradient(
         180deg,
         transparent 0,
@@ -75,6 +75,7 @@
         rgba(255,255,255,.08) 4px
       );
       mix-blend-mode:screen;
+      animation:scanDrift 8s linear infinite;
     }
 
     .sun {
@@ -227,17 +228,31 @@
     }
 
     .meter-level {
+      position:relative;
       min-width:0;
       height:40px;
       border:1px solid rgba(129,140,248,.35);
-      border-radius:7px;
-      color:#7dd3fc;
-      background:rgba(16,12,43,.84);
-      font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
-      font-size:.75rem;
+      border-radius:5px;
+      color:transparent;
+      background:
+        linear-gradient(180deg,rgba(255,255,255,.025),rgba(255,255,255,0)),
+        rgba(16,12,43,.88);
       cursor:pointer;
-      transition:transform .12s ease,filter .12s ease,opacity .12s ease;
-      box-shadow:inset 0 0 12px rgba(76,29,149,.18);
+      transition:transform .12s ease,filter .12s ease,opacity .12s ease,box-shadow .12s ease;
+      box-shadow:
+        inset 0 0 12px rgba(76,29,149,.22),
+        inset 0 -5px 0 rgba(0,0,0,.18);
+      overflow:hidden;
+    }
+
+    .meter-level::after {
+      content:"";
+      position:absolute;
+      inset:4px;
+      border-radius:3px;
+      background:linear-gradient(180deg,rgba(255,255,255,.10),transparent 45%);
+      opacity:.35;
+      pointer-events:none;
     }
 
     .meter-level:hover {
@@ -246,17 +261,22 @@
     }
 
     .meter-level.active {
-      color:white;
+      color:transparent;
       border-color:transparent;
       background:var(--meter-gradient);
       box-shadow:
         0 0 10px var(--meter-glow),
-        inset 0 0 10px rgba(255,255,255,.16);
+        0 0 22px color-mix(in srgb, var(--meter-glow) 65%, transparent),
+        inset 0 0 10px rgba(255,255,255,.22),
+        inset 0 -6px 0 rgba(0,0,0,.12);
+      animation:meterPulse 1.8s ease-in-out infinite;
+      animation-delay:calc(var(--segment-index) * -70ms);
     }
 
     .meter-level.selected {
       outline:2px solid white;
       outline-offset:2px;
+      filter:brightness(1.28) saturate(1.15);
     }
 
     .meter-value {
@@ -270,7 +290,7 @@
 
     .score-grid {
       display:grid;
-      grid-template-columns:repeat(3,minmax(0,1fr));
+      grid-template-columns:repeat(2,minmax(0,1fr));
       gap:12px;
       margin-top:22px;
     }
@@ -363,6 +383,27 @@
       to { transform:scale(1.025); filter:brightness(1.35); }
     }
 
+
+    .score-value.digit-pop {
+      animation:digitPop .24s steps(3,end);
+    }
+
+    @keyframes meterPulse {
+      0%,100% { filter:brightness(.96); }
+      50% { filter:brightness(1.14); }
+    }
+
+    @keyframes digitPop {
+      0% { transform:translateY(7px); opacity:.25; filter:blur(2px); }
+      55% { transform:translateY(-2px); opacity:1; filter:blur(0); }
+      100% { transform:translateY(0); }
+    }
+
+    @keyframes scanDrift {
+      from { background-position:0 0; }
+      to { background-position:0 16px; }
+    }
+
     @media (max-width:760px) {
       body { padding:10px; }
       .synth-app { padding:17px; border-radius:22px; }
@@ -437,10 +478,6 @@
           <div id="flavor-code" class="score-value">000000</div>
         </div>
 
-        <div class="neon-panel">
-          <div class="panel-label">TOTAL DAMAGE</div>
-          <div id="total-score" class="score-value">0 / 54</div>
-        </div>
 
         <div class="neon-panel">
           <div class="panel-label">FINAL CLASSIFICATION</div>
@@ -474,90 +511,90 @@
       ["R","Recipients","How many innocent bystanders lost faith in humanity?"]
     ];
 
-    const names = [
-      "Administrative Error","Ghost Protocol","Suspicious Draft","Invisible Accomplice",
-      "Featherweight Felony","Silent Side Quest","Budget Balloon","Stealth Tutorial",
-      "Minor Incident Report","Beginner Trap","Sock Drawer Ambush","Courtesy Warning",
-      "Dungeon Rat Special","Unlicensed Experiment","Awkward Intermission",
-      "Open-A-Window Tier","Ventilation Request","Social Armor Check",
-      "Dog-Blame Difficulty","Audible Side Effect","Mediocre Curse","Candle Threat Level",
-      "Morale Debuff","Conversation Killer","Public Denial Phase","Skunk Internship",
-      "Room Hazard","Mild Necromancy","Consent Violation of Oxygen",
-      "Emergency Febreze Event","Tactical Relocation","Bridge Troll Tribute",
-      "Boss Room Notification","Area-of-Effect Damage","Cursed Aura",
-      "Restricted Airspace","Cheek-Sealed Explosive","Stagger Damage",
-      "Legendary Trap Room","Toxic Encounter","Boss-Level Gas Attack",
-      "Party Wipe Attempt","Genetic Memory Event","Biohazard Achievement",
-      "Evacuation Optional","Alien Atmosphere","Internal Volcano","Reality Leak",
-      "Dragon Breath, Wrong End","Structural Concern","Indoor Weather System",
-      "Ancient Curse Unsealed","Orbital Detection Event","Extinction-Level Emission",
-      "Final Boss: Atmosphere"
+
+    const classificationPrefixes = [
+      "Administrative","Spectral","Suspicious","Invisible",
+      "Featherweight","Silent","Budget","Stealth",
+      "Minor","Cursed","Dungeon","Unlicensed",
+      "Tactical","Toxic","Orbital","Extinction"
     ];
 
-    const icons = [
-      "😇","🫧","🌬️","🕵️","🪶","🤫","🎈","🥷","📎","🪤","🧦","🛎️","🐁","🧪",
-      "🫣","🚪","🪟","🛡️","🐕","📣","🧙","🕯️","🥴","🪦","🎭","🦨","⚠️","🧟",
-      "🛑","🧯","🏃","🧌","🔔","💢","🪄","🚧","🧨","😵","🪤","🦂","💀","☠️",
-      "🧬","☣️","🚨","🛸","🌋","🕳️","🐉","🏚️","🌪️","🧿","🛰️","☄️","💥"
+    const classificationSuffixes = [
+      "Error","Protocol","Draft","Accomplice",
+      "Felony","Side Quest","Balloon","Tutorial",
+      "Incident","Trap","Ambush","Experiment",
+      "Debuff","Hazard","Catastrophe","Final Boss"
     ];
 
-    const descriptions = [
-      "No measurable incident. The paperwork is somehow more dangerous than you are.",
-      "A rumor of gas passed through the room and immediately hired a lawyer.",
-      "Barely detectable. A curtain moved and now everyone is accusing the HVAC.",
-      "Something happened, but the evidence is weak and the dog looks nervous.",
-      "Technically a crime, emotionally a rounding error.",
-      "A tiny event with no loot, no witnesses, and somehow still no dignity.",
-      "Light pressure, modest consequences, absolutely no production value.",
-      "Quiet, controlled, and disappointingly competent.",
-      "Human resources has opened a file nobody intends to read.",
-      "The room noticed. Trust did not survive.",
-      "Mild, enclosed, and weirdly personal.",
-      "A polite little announcement that worse decisions are available.",
-      "Small, sneaky, and clearly raised without supervision.",
-      "The results are inconclusive, but the ethics board has resigned.",
-      "Conversation stopped just long enough for everyone to become suspicious.",
-      "Not an emergency, but the architecture is now involved.",
-      "The room has submitted a formal petition for outside air.",
-      "Somebody laughed. Somebody else will never trust you again.",
-      "The pet has been framed with the confidence of a career criminal.",
-      "Subtlety has left the building and taken the alibi with it.",
-      "Annoying, persistent, and definitely cast by an underpaid wizard.",
-      "One scented candle has been deployed. It is losing.",
-      "Everyone remains conscious, but enthusiasm has taken damage.",
-      "The topic died instantly. No one is attending the funeral.",
-      "Everyone knows. Nobody admits knowing. Civilization continues somehow.",
-      "Promising technique, alarming potential, no professional certification.",
-      "The air has become a gameplay mechanic.",
-      "Something dead has entered the room without opening the door.",
-      "The atmosphere did not agree to participate in this.",
-      "Spray bottles are being drawn like sidearms.",
-      "Witnesses are moving with purpose and pretending it is unrelated.",
-      "Dense, hostile, and somehow charging admission.",
-      "The music changed. Nobody is ready.",
-      "Multiple targets affected. Friendly fire has been enabled.",
-      "The source is unclear, but the debuff is definitely magical.",
-      "Movement is permitted. Breathing is discouraged.",
-      "Compact delivery system. Questionable safety record.",
-      "The nearest witness has lost one full turn.",
-      "The exit is visible, but dignity is blocking the path.",
-      "This is no longer comedy. It is environmental storytelling.",
-      "The room has entered its second phase.",
-      "Several people are reconsidering the value of teamwork.",
-      "Future generations may instinctively avoid this location.",
-      "Congratulations. The building has unlocked a new warning label.",
-      "Leaving is technically voluntary in the same way survival is optional.",
-      "Earth scientists have declined comment and quietly gone home.",
-      "Pressure was released. History will not be kind.",
-      "The smell appears to originate from a dimension with worse standards.",
-      "Mythical output. Tragically inaccurate anatomy.",
-      "The building remains upright, but emotionally it has collapsed.",
-      "The room now has climate, seasons, and a hostile forecast.",
-      "Archaeologists warned you. You did not listen because nobody ever does.",
-      "Satellites have noticed. International relations are deteriorating.",
-      "The fossil record will be unhelpfully specific about this moment.",
-      "Maximum score. The air has been defeated and refuses a rematch."
+    const classificationEmojis = [
+      "😇","🫧","🌬️","🕵️","🪶","🤫","🎈","🥷",
+      "📎","🪤","🧦","🧪","🛡️","⚠️","💀","💥",
+      "🧙","🦨","🧟","🧯","🏃","🧌","🔔","💢",
+      "🚧","🧨","😵","🦂","☠️","☣️","🚨","🌋"
     ];
+
+    const descriptionOpeners = [
+      "The room detected",
+      "Witnesses reported",
+      "The ventilation system logged",
+      "A nearby houseplant survived",
+      "The atmosphere reluctantly accepted",
+      "The dungeon announcer confirmed",
+      "Human resources documented",
+      "The emergency candle discovered",
+      "A suspicious pet was blamed for",
+      "Local scientists abandoned",
+      "The building unlocked",
+      "Several innocent bystanders endured",
+      "The air-quality monitor resigned over",
+      "Civilization briefly experienced",
+      "Future historians will misinterpret",
+      "Satellite instruments detected"
+    ];
+
+    const descriptionClosers = [
+      "an incident too small for glory but large enough for paperwork.",
+      "a stealth event with excellent timing and terrible ethics.",
+      "a pressure release that immediately damaged group morale.",
+      "a biological side quest nobody remembered accepting.",
+      "an atmospheric betrayal with suspiciously professional execution.",
+      "an odor event now classified as environmental storytelling.",
+      "a social debuff that may persist through the next conversation.",
+      "a compact disaster with deluxe consequences.",
+      "a room-wide effect that made the nearest exit look heroic.",
+      "a cursed breeze carrying absolutely no loot.",
+      "an invisible boss mechanic with an unfair damage radius.",
+      "a ventilation request disguised as a personality test.",
+      "a gas crime whose only witness is reconsidering friendship.",
+      "a tactical emission that turned oxygen into a limited resource.",
+      "a legendary incident already being blamed on the architecture.",
+      "a final-form atmosphere event that refuses to apologize."
+    ];
+
+    const classifications = Array.from({ length: 256 }, (_, index) => {
+      const high = Math.floor(index / 16);
+      const low = index % 16;
+
+      return {
+        emoji: classificationEmojis[(high * 7 + low * 3) % classificationEmojis.length],
+        name: `${classificationPrefixes[high]} ${classificationSuffixes[low]}`,
+        description: `${descriptionOpeners[high]} ${descriptionClosers[low]}`
+      };
+    });
+
+    function classificationIndex(inputValues) {
+      let hash = 0;
+
+      inputValues.forEach((value, index) => {
+        hash = (hash * 37 + value * (index + 11)) & 255;
+      });
+
+      return hash;
+    }
+
+    function currentClassification() {
+      return classifications[classificationIndex(values)];
+    }
 
     const palettes = [
       ["#22d3ee","#2563eb","#8b5cf6","rgba(34,211,238,.7)"],
@@ -577,9 +614,6 @@
     let nextNoteTime = 0;
     let musicStep = 0;
 
-    function getAppUrl() {
-      return window.location.href.split("#")[0].split("?")[0];
-    }
 
     async function unlockAudio() {
       const AudioCtor = window.AudioContext || window.webkitAudioContext;
@@ -645,7 +679,9 @@
         button.type = "button";
         button.className = "meter-level";
         button.dataset.score = String(score);
-        button.textContent = String(score);
+        button.textContent = "";
+        button.style.setProperty("--segment-index", String(score));
+        button.title = `${item[1]}: ${score}`;
         button.setAttribute("aria-label", `${item[1]} ${score} out of 9`);
 
         button.addEventListener("click", async () => {
@@ -701,6 +737,15 @@
       bars.appendChild(row);
     });
 
+    function animateScoreCode(nextCode) {
+      const codeEl = document.getElementById("flavor-code");
+      if (codeEl.textContent === nextCode) return;
+      codeEl.textContent = nextCode;
+      codeEl.classList.remove("digit-pop");
+      void codeEl.offsetWidth;
+      codeEl.classList.add("digit-pop");
+    }
+
     function update() {
       let total = 0;
 
@@ -727,18 +772,18 @@
         document.getElementById(`meter-value-${index}`).textContent = String(value);
       });
 
-      document.getElementById("flavor-code").textContent = values.join("");
-      document.getElementById("total-score").textContent = `${total} / 54`;
-      document.getElementById("flavor-badge").textContent = `${icons[total]} ${names[total]}`;
-      document.getElementById("verdict-name").textContent = `${icons[total]} ${names[total]}`;
-      document.getElementById("flavor-taunt").textContent = descriptions[total];
+      animateScoreCode(values.join(""));
+      const classification = currentClassification();
+      document.getElementById("flavor-badge").textContent = `${classification.emoji} ${classification.name}`;
+      document.getElementById("verdict-name").textContent = `${classification.emoji} ${classification.name}`;
+      document.getElementById("flavor-taunt").textContent = classification.description;
       document.getElementById("flavor-summary").textContent =
         `F ${values[0]} · L ${values[1]} · A ${values[2]} · V ${values[3]} · O ${values[4]} · R ${values[5]}`;
     }
 
     function getShareText() {
-      const total = values.reduce((sum, value) => sum + value, 0);
-      return `${values.join("")}\n${icons[total]} ${names[total]}\n${getAppUrl()}`;
+      const classification = currentClassification();
+      return `${values.join("")}\n${classification.emoji} ${classification.name}`;
     }
 
     async function copyText(text) {
@@ -912,7 +957,7 @@
         clearInterval(musicTimer);
         musicTimer = null;
         button.setAttribute("aria-pressed", "false");
-        button.textContent = "▶ START DOOM CHIPTUNE";
+        button.textContent = "▶ START MUSIC";
         playButtonSound(2);
       } else {
         playButtonSound(9);
@@ -921,7 +966,7 @@
         scheduleMusic();
         musicTimer = window.setInterval(scheduleMusic, 40);
         button.setAttribute("aria-pressed", "true");
-        button.textContent = "■ STOP DOOM CHIPTUNE";
+        button.textContent = "■ STOP MUSIC";
       }
     }
 
