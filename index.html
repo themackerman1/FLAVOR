@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FLAVOR</title>
+<style>
+*{box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+body{margin:0;background:#f4f4f7;display:flex;justify-content:center;align-items:center;min-height:100vh;transition:.4s;padding:20px}
+.card{width:min(540px,94vw);background:white;border-radius:24px;padding:30px;box-shadow:0 18px 45px rgba(0,0,0,.12)}
+h1{margin:0;text-align:center;font-size:46px}.subtitle{color:#777;text-align:center;margin-bottom:25px}.metric{margin:18px 0}.metric label{display:flex;justify-content:space-between;margin-bottom:6px;font-weight:600}input[type=range]{width:100%;cursor:pointer}#code{text-align:center;font-size:44px;letter-spacing:8px;margin:25px 0 12px;font-weight:bold}#badge{text-align:center;margin-bottom:18px}#summary{text-align:center;color:#666;line-height:1.6;margin-bottom:25px}button{width:100%;padding:16px;border:none;border-radius:14px;background:#111;color:white;font-size:16px;cursor:pointer;transition:.2s}button:hover{background:#333}.copied{margin-top:12px;text-align:center;color:#555;min-height:20px}
+</style>
+</head>
+<body>
+<div class="card">
+<h1>💨 FLAVOR</h1>
+<div class="subtitle">Rate your fart from 0–9</div>
+<div id="metrics"></div>
+<div id="code">000000</div>
+<div id="badge"></div>
+<div id="summary"></div>
+<button id="shareButton" type="button">📋 Copy & Share</button>
+<div class="copied" id="copiedMessage" aria-live="polite"></div>
+</div>
+<script>
+const metrics=document.getElementById("metrics");
+const items=[["F","Frequency"],["L","Length"],["A","Audibility"],["V","Volume"],["O","Odor"],["R","Recipients"]];
+const colors=["#2ecc71","#2ecc71","#6fd96f","#c7d83a","#f1c40f","#f39c12","#e67e22","#e74c3c","#c0392b","#6c0f0f"];
+const emojis=["😇","🙂","😊","😏","😬","😅","🤢","💀","☣️","🚨"];
+const grades=["Nothing Burger","Whisper","Gentle Breeze","Noticeable","Respectable","Room Warmer","Cheek Clapper","Gas Attack","Biohazard","Extinction Event"];
+items.forEach((item,i)=>{const div=document.createElement("div");div.className="metric";div.innerHTML=`<label for="s${i}"><span>${item[0]} — ${item[1]}</span><span id="v${i}">0 😇</span></label><input id="s${i}" type="range" min="0" max="9" value="0">`;metrics.appendChild(div);document.getElementById(`s${i}`).addEventListener("input",update)});
+function getValues(){return items.map((_,i)=>Number(document.getElementById(`s${i}`).value))}
+function update(){const values=getValues();let total=0;values.forEach((value,i)=>{total+=value;const slider=document.getElementById(`s${i}`);slider.style.accentColor=colors[value];document.getElementById(`v${i}`).innerHTML=`<span style="color:${colors[value]}">${value} ${emojis[value]}</span>`});const average=Math.round(total/6);document.getElementById("code").textContent=values.join("");document.body.style.background=`linear-gradient(135deg,#ffffff,${colors[average]}22)`;document.getElementById("badge").innerHTML=`<div style="display:inline-block;padding:12px 22px;border-radius:999px;background:${colors[average]};color:white;font-weight:bold;font-size:18px">${emojis[average]} ${grades[average]}</div>`;document.getElementById("summary").innerHTML=`<b>F ${values[0]}</b> ${emojis[values[0]]} • <b>L ${values[1]}</b> ${emojis[values[1]]} • <b>A ${values[2]}</b> ${emojis[values[2]]}<br><b>V ${values[3]}</b> ${emojis[values[3]]} • <b>O ${values[4]}</b> ${emojis[values[4]]} • <b>R ${values[5]}</b> ${emojis[values[5]]}`}
+async function copyResult(){const values=getValues();const avg=Math.round(values.reduce((a,b)=>a+b,0)/6);const text=`💨 FLAVOR Score: ${values.join("")}\n\n${emojis[avg]} ${grades[avg]}\n\nF ${values[0]}/9 Frequency\nL ${values[1]}/9 Length\nA ${values[2]}/9 Audibility\nV ${values[3]}/9 Volume\nO ${values[4]}/9 Odor\nR ${values[5]}/9 Recipients\n\nRate yours with FLAVOR!`;const msg=document.getElementById("copiedMessage");try{await navigator.clipboard.writeText(text);msg.textContent="FLAVOR score copied!"}catch{msg.textContent="Copy failed — select and copy the score manually."}setTimeout(()=>msg.textContent="",2500)}
+document.getElementById("shareButton").addEventListener("click",copyResult);update();
+</script>
+</body>
+</html>
