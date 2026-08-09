@@ -1,26 +1,23 @@
 # ASS — Atmospheric Severity System
 
-Three 0–9 inputs:
+This build was rebuilt cleanly from scratch.
 
+Inputs:
 - A — Amount
 - S — Smell
 - S — Sound
 
-## 999 descriptive results
+Only three fields exist in this build.
 
-Every non-zero three-digit score from 001 through 999 has a unique, deterministic classification.
-000 remains the special no-incident state.
+Classification:
+- Every non-zero code from 001 to 999 has a unique descriptive title.
+- Higher values produce more dangerous language.
+- Amount, Smell, and Sound each affect the classification independently.
+- Example: 919 = very large, faint smell, maximum sound.
 
-The classifier is trait-aware rather than treating the score as a simple total:
-- Amount changes the scale/payload language.
-- Smell changes odor language.
-- Sound changes acoustic language.
-- Overall danger rises with the three values, with smell and amount weighted slightly more heavily.
-- The dominant category changes the emphasis of the description.
+Share output:
+- three-digit ASS code
+- emoji + classification only
 
-Example:
-919 = Amount 9, Smell 1, Sound 9 → huge and extremely loud, but only faintly smelly.
-
-Shared output remains only:
-three-digit code
-emoji + classification
+GitHub Pages:
+Upload all files in this folder to the repository root and commit.

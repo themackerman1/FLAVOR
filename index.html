@@ -4,13 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#07030f">
-  <meta name="description" content="FLAVOR — rate atmospheric damage across six highly scientific categories.">
-  <title>FLAVOR</title>
-
+  <meta name="description" content="ASS — Atmospheric Severity System.">
+  <title>ASS</title>
   <link rel="icon" href="icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
   <link rel="manifest" href="manifest.webmanifest">
-
   <style>
     :root {
       color-scheme: dark;
@@ -21,480 +19,174 @@
       --panel:rgba(10,6,32,.78);
       --border:rgba(103,232,249,.28);
     }
-
-    * { box-sizing: border-box; }
-
-    html { min-height: 100%; background:#050312; }
-
-    body {
-      margin:0;
-      min-height:100vh;
-      padding:18px;
-      color:#fdf4ff;
+    *{box-sizing:border-box}
+    html{min-height:100%;background:#050312}
+    body{
+      margin:0;min-height:100vh;padding:18px;color:#fdf4ff;
       background:
-        radial-gradient(circle at 50% 5%, rgba(132,245,66,.12), transparent 23%),
-        radial-gradient(circle at 50% 8%, rgba(255,68,202,.20), transparent 36%),
+        radial-gradient(circle at 50% 5%,rgba(132,245,66,.12),transparent 23%),
+        radial-gradient(circle at 50% 8%,rgba(255,68,202,.20),transparent 36%),
         linear-gradient(180deg,#17062c 0%,#0a0620 48%,#050312 100%);
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
     }
+    button{font:inherit}
+    button:focus-visible{outline:3px solid white;outline-offset:3px}
 
-    button, textarea { font: inherit; }
-
-    button:focus-visible {
-      outline: 3px solid white;
-      outline-offset: 3px;
-    }
-
-    .synth-app {
-      position:relative;
-      isolation:isolate;
-      width:min(980px,100%);
-      margin:0 auto;
-      overflow:hidden;
-      border:1px solid rgba(132,245,66,.5);
-      border-radius:28px;
-      padding:22px;
+    .app{
+      position:relative;isolation:isolate;width:min(980px,100%);margin:0 auto;overflow:hidden;
+      border:1px solid rgba(132,245,66,.5);border-radius:28px;padding:22px;
       background:
         radial-gradient(circle at 50% 8%,rgba(132,245,66,.10),transparent 22%),
         radial-gradient(circle at 50% 8%,rgba(255,68,202,.20),transparent 34%),
         linear-gradient(180deg,#17062c 0%,#0a0620 48%,#050312 100%);
-      box-shadow:
-        inset 0 0 0 1px rgba(103,232,249,.16),
-        0 0 30px rgba(132,245,66,.12);
+      box-shadow:inset 0 0 0 1px rgba(103,232,249,.16),0 0 30px rgba(132,245,66,.12);
     }
-
-    .scanlines {
-      position:absolute;
-      inset:0;
-      pointer-events:none;
-      opacity:.22;
-      background:repeating-linear-gradient(
-        180deg,
-        transparent 0,
-        transparent 3px,
-        rgba(255,255,255,.08) 4px
-      );
-      mix-blend-mode:screen;
-      animation:scanDrift 8s linear infinite;
+    .scanlines{
+      position:absolute;inset:0;z-index:20;pointer-events:none;opacity:.42;
+      background:repeating-linear-gradient(180deg,rgba(255,255,255,.10) 0,rgba(255,255,255,.10) 1px,rgba(0,0,0,.24) 2px,rgba(0,0,0,.24) 4px);
+      mix-blend-mode:soft-light;
     }
-
-    .sun {
-      position:absolute;
-      top:118px;
-      left:50%;
-      width:210px;
-      height:105px;
-      transform:translateX(-50%);
-      border-radius:210px 210px 0 0;
-      opacity:.16;
-      background:repeating-linear-gradient(
-        180deg,
-        #84f542 0,
-        #84f542 7px,
-        #7e22ce 8px,
-        #7e22ce 12px
-      );
-      pointer-events:none;
+    .scan-sweep{
+      position:absolute;left:0;right:0;top:-18%;height:18%;z-index:19;pointer-events:none;
+      background:linear-gradient(180deg,transparent,rgba(132,245,66,.10),rgba(103,232,249,.22),transparent);
+      animation:scanSweep 3.6s linear infinite;
     }
-
-    .grid-floor {
-      position:absolute;
-      left:-15%;
-      right:-15%;
-      bottom:-90px;
-      height:280px;
-      opacity:.16;
-      transform:perspective(360px) rotateX(62deg);
-      transform-origin:bottom;
-      background-image:
-        linear-gradient(rgba(132,245,66,.7) 1px,transparent 1px),
-        linear-gradient(90deg,rgba(236,72,153,.7) 1px,transparent 1px);
-      background-size:42px 42px;
-      pointer-events:none;
+    @keyframes scanSweep{from{transform:translateY(0)}to{transform:translateY(650%)}}
+    .crt-vignette{
+      position:absolute;inset:0;z-index:18;pointer-events:none;
+      box-shadow:inset 0 0 45px rgba(0,0,0,.35),inset 0 0 110px rgba(0,0,0,.42),inset 0 0 22px rgba(34,211,238,.08);
     }
-
-    .content { position:relative; z-index:1; }
-
-    header {
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      gap:18px;
-      margin-bottom:26px;
-      text-align:left;
+    .content{position:relative;z-index:1}
+    header{display:flex;align-items:center;justify-content:center;gap:18px;margin-bottom:28px;text-align:left}
+    .app-tile{
+      width:88px;height:88px;flex:0 0 auto;overflow:hidden;border:2px solid var(--green);border-radius:18px;background:#07030f;
+      box-shadow:0 0 12px var(--green),0 0 28px rgba(132,245,66,.38);
     }
-
-    .app-tile {
-      width:88px;
-      height:88px;
-      flex:0 0 auto;
-      overflow:hidden;
-      border:2px solid var(--green);
-      border-radius:18px;
-      background:#07030f;
-      box-shadow:
-        0 0 12px var(--green),
-        0 0 28px rgba(132,245,66,.38);
+    .app-tile img{display:block;width:100%;height:100%;image-rendering:pixelated}
+    .kicker,.panel-label{
+      font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.72rem;letter-spacing:.22em;color:var(--cyan)
     }
-
-    .app-tile img {
-      display:block;
-      width:100%;
-      height:100%;
-      image-rendering:pixelated;
+    .title{
+      margin:.25rem 0 0;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:clamp(2.5rem,8vw,5rem);font-weight:900;
+      line-height:.95;letter-spacing:.12em;color:#fff;text-shadow:3px 3px 0 var(--green),-3px -3px 0 #7e22ce,0 0 22px rgba(132,245,66,.68)
     }
-
-    .arcade-kicker,
-    .panel-label {
-      font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
-      font-size:.72rem;
-      letter-spacing:.22em;
-      color:var(--cyan);
+    .music,.transmit{
+      border:1px solid var(--cyan);border-radius:10px;padding:.8rem 1rem;color:#fff;background:linear-gradient(135deg,#3f1d74,#9d174d);
+      font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.75rem;font-weight:900;letter-spacing:.07em;cursor:pointer;
+      box-shadow:0 0 14px rgba(219,39,119,.35);transition:.12s ease
     }
+    .music:hover,.transmit:hover{transform:translateY(-1px);filter:brightness(1.15)}
+    .music[aria-pressed="true"]{border-color:var(--green);background:linear-gradient(135deg,#14532d,#3f6212);box-shadow:0 0 16px rgba(132,245,66,.5)}
 
-    .arcade-title {
-      margin:.25rem 0 0;
-      font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
-      font-size:clamp(2.5rem,8vw,5rem);
-      font-weight:900;
-      line-height:.95;
-      letter-spacing:.12em;
-      color:white;
-      text-shadow:
-        3px 3px 0 var(--green),
-        -3px -3px 0 #7e22ce,
-        0 0 18px rgba(132,245,66,.55);
+    .meters{display:grid;gap:18px}
+    .meter-row{display:grid;grid-template-columns:minmax(120px,180px) 1fr 42px;gap:.9rem;align-items:center}
+    .meter-name{
+      font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.86rem;font-weight:800;letter-spacing:.08em;color:#f5d0fe
     }
-
-    .music-button,
-    .arcade-button {
-      border:1px solid var(--cyan);
-      border-radius:10px;
-      padding:.78rem 1rem;
-      color:white;
-      background:linear-gradient(135deg,#3f1d74,#9d174d);
-      font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
-      font-size:.75rem;
-      font-weight:900;
-      letter-spacing:.07em;
-      cursor:pointer;
-      box-shadow:0 0 14px rgba(219,39,119,.35);
-      transition:transform .12s ease, filter .12s ease, background .12s ease, box-shadow .12s ease;
+    .meter-help{margin-top:.2rem;font-size:.74rem;line-height:1.3;color:#a5b4fc}
+    .meter-track{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:5px}
+    .pixel-block{
+      min-width:0;height:42px;border:1px solid rgba(129,140,248,.35);border-radius:5px;background:rgba(16,12,43,.9);
+      box-shadow:inset 0 0 12px rgba(76,29,149,.22);cursor:pointer
     }
-
-    .music-button:hover,
-    .arcade-button:hover {
-      transform:translateY(-1px);
-      filter:brightness(1.15);
+    .pixel-block.active{
+      border-color:transparent;background:var(--meter-gradient);
+      box-shadow:0 0 8px var(--meter-glow),0 0 16px var(--meter-glow),inset 0 0 12px rgba(255,255,255,.18)
     }
-
-    .music-button[aria-pressed="true"] {
-      border-color:var(--green);
-      background:linear-gradient(135deg,#14532d,#3f6212);
-      box-shadow:0 0 16px rgba(132,245,66,.5);
+    .pixel-block.selected{
+      outline:2px solid #fff;outline-offset:2px;animation:selectedPulse .72s ease-in-out infinite
     }
-
-    .bars {
-      display:grid;
-      gap:15px;
-    }
-
-    .meter-row {
-      display:grid;
-      grid-template-columns:minmax(110px,150px) 1fr 42px;
-      gap:.8rem;
-      align-items:center;
-    }
-
-    .meter-name {
-      font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
-      font-size:.82rem;
-      font-weight:800;
-      letter-spacing:.08em;
-      color:#f5d0fe;
-    }
-
-    .meter-help {
-      margin-top:.18rem;
-      font-size:.72rem;
-      line-height:1.28;
-      color:#a5b4fc;
-    }
-
-    .meter-track {
-      display:grid;
-      grid-template-columns:repeat(10,minmax(0,1fr));
-      gap:5px;
-    }
-
-    .meter-level {
-      position:relative;
-      min-width:0;
-      height:40px;
-      border:1px solid rgba(129,140,248,.35);
-      border-radius:5px;
-      color:transparent;
-      background:
-        linear-gradient(180deg,rgba(255,255,255,.025),rgba(255,255,255,0)),
-        rgba(16,12,43,.88);
-      cursor:pointer;
-      transition:transform .12s ease,filter .12s ease,opacity .12s ease,box-shadow .12s ease;
-      box-shadow:
-        inset 0 0 12px rgba(76,29,149,.22),
-        inset 0 -5px 0 rgba(0,0,0,.18);
-      overflow:hidden;
-    }
-
-    .meter-level::after {
-      content:"";
-      position:absolute;
-      inset:4px;
-      border-radius:3px;
-      background:linear-gradient(180deg,rgba(255,255,255,.10),transparent 45%);
-      opacity:.35;
-      pointer-events:none;
-    }
-
-    .meter-level:hover {
-      transform:translateY(-2px);
-      filter:brightness(1.25);
-    }
-
-    .meter-level.active {
-      color:transparent;
-      border-color:transparent;
-      background:var(--meter-gradient);
-      box-shadow:
-        0 0 10px var(--meter-glow),
-        0 0 22px color-mix(in srgb, var(--meter-glow) 65%, transparent),
-        inset 0 0 10px rgba(255,255,255,.22),
-        inset 0 -6px 0 rgba(0,0,0,.12);
-      animation:meterPulse 1.8s ease-in-out infinite;
-      animation-delay:calc(var(--segment-index) * -70ms);
-    }
-
-    .meter-level.selected {
-      outline:2px solid white;
-      outline-offset:2px;
-      filter:brightness(1.28) saturate(1.15);
-    }
-
-    .meter-value {
-      font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
-      font-size:1.2rem;
-      font-weight:900;
-      color:var(--green);
-      text-align:center;
-      text-shadow:0 0 10px rgba(132,245,66,.75);
-    }
-
-    .score-grid {
-      display:grid;
-      grid-template-columns:repeat(2,minmax(0,1fr));
-      gap:12px;
-      margin-top:22px;
-    }
-
-    .neon-panel,
-    .verdict-panel,
-    .share-panel {
-      border:1px solid var(--border);
-      background:var(--panel);
-      box-shadow:
-        inset 0 0 18px rgba(76,29,149,.18),
-        0 0 14px rgba(132,245,66,.06);
-    }
-
-    .neon-panel {
-      border-radius:14px;
-      padding:1rem;
-      text-align:center;
-    }
-
-    .score-value {
-      margin-top:.38rem;
-      font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
-      font-size:1.45rem;
-      font-weight:900;
-      color:white;
-      text-shadow:0 0 12px rgba(34,211,238,.65);
-    }
-
-    .result-title {
-      margin-top:.4rem;
-      color:#d9ff57;
-      font-weight:800;
-    }
-
-    .verdict-panel {
-      margin-top:12px;
-      border-radius:18px;
-      padding:1.25rem;
-      text-align:center;
-    }
-
-    .verdict-name {
-      font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
-      font-size:1.12rem;
-      font-weight:900;
-      color:var(--yellow);
-      text-shadow:0 0 12px rgba(250,204,21,.5);
-    }
-
-    .verdict-copy {
-      margin:.55rem 0 0;
-      color:#e9d5ff;
-    }
-
-    .summary-line {
-      margin:.8rem 0 0;
-      font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
-      font-size:.82rem;
-      color:var(--cyan);
-    }
-
-    .share-panel {
-      display:flex;
-      justify-content:center;
-      margin-top:12px;
-      border-radius:18px;
-      padding:16px;
-    }
-
-    .arcade-button {
-      min-width:min(100%,320px);
-      padding:1rem 1.25rem;
-      font-size:.82rem;
-    }
-
-    .arcade-button.transmitted {
-      border-color:var(--green);
-      color:#07110a;
-      background:linear-gradient(135deg,#d9ff57,#84f542);
-      box-shadow:
-        0 0 10px rgba(132,245,66,.95),
-        0 0 28px rgba(132,245,66,.75),
-        inset 0 0 10px rgba(255,255,255,.65);
-      animation:transmitFlash .18s ease-in-out 2 alternate;
-    }
-
-    @keyframes transmitFlash {
-      from { transform:scale(1); filter:brightness(1); }
-      to { transform:scale(1.025); filter:brightness(1.35); }
-    }
-
-
-    .score-value.digit-pop {
-      animation:digitPop .24s steps(3,end);
-    }
-
-    @keyframes meterPulse {
-      0%,100% { filter:brightness(.96); }
-      50% { filter:brightness(1.14); }
-    }
-
-    @keyframes digitPop {
-      0% { transform:translateY(7px); opacity:.25; filter:blur(2px); }
-      55% { transform:translateY(-2px); opacity:1; filter:blur(0); }
-      100% { transform:translateY(0); }
-    }
-
-    @keyframes scanDrift {
-      from { background-position:0 0; }
-      to { background-position:0 16px; }
-    }
-
-    @media (max-width:760px) {
-      body { padding:10px; }
-      .synth-app { padding:17px; border-radius:22px; }
-
-      header {
-        flex-direction:column;
-        text-align:center;
+    @keyframes selectedPulse{
+      0%,100%{
+        transform:scale(1);filter:brightness(1);
+        box-shadow:0 0 8px var(--meter-glow),0 0 16px var(--meter-glow),inset 0 0 12px rgba(255,255,255,.18)
       }
-
-      .meter-row {
-        grid-template-columns:1fr 38px;
-      }
-
-      .meter-label-block {
-        grid-column:1 / -1;
-      }
-
-      .meter-help { display:none; }
-
-      .score-grid {
-        grid-template-columns:1fr;
+      50%{
+        transform:scale(1.055);filter:brightness(1.38) saturate(1.17);
+        box-shadow:0 0 11px var(--meter-glow),0 0 25px var(--meter-glow),inset 0 0 15px rgba(255,255,255,.31)
       }
     }
-
-    @media (max-width:500px) {
-      .meter-track { gap:3px; }
-      .meter-level {
-        height:35px;
-        border-radius:5px;
-        font-size:.66rem;
-      }
+    .meter-value{
+      font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:1.25rem;font-weight:900;color:var(--green);
+      text-align:center;text-shadow:0 0 10px rgba(132,245,66,.75)
     }
 
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after {
-        scroll-behavior:auto !important;
-        animation-duration:.01ms !important;
-        animation-iteration-count:1 !important;
-        transition-duration:.01ms !important;
-      }
+    .score-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:24px}
+    .panel,.verdict,.share{
+      border:1px solid var(--border);background:var(--panel);
+      box-shadow:inset 0 0 18px rgba(76,29,149,.18),0 0 18px rgba(132,245,66,.07)
     }
+    .panel{border-radius:14px;padding:1rem;text-align:center}
+    .score-code{
+      display:flex;justify-content:center;gap:.2em;margin-top:.4rem;
+      font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:clamp(1.8rem,7vw,3rem);font-weight:900;color:#fff;
+      text-shadow:0 0 12px rgba(34,211,238,.65)
+    }
+    .score-code span{display:inline-block;min-width:.65em}
+    .score-code span.roll{animation:digitRoll .18s ease}
+    @keyframes digitRoll{0%{transform:translateY(-35%);opacity:0}100%{transform:translateY(0);opacity:1}}
+    .classification{margin-top:.45rem;color:#d9ff57;font-weight:800}
+    .verdict{margin-top:12px;border-radius:18px;padding:1.25rem;text-align:center}
+    .verdict-name{
+      font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:1.12rem;font-weight:900;color:var(--yellow);
+      text-shadow:0 0 12px rgba(250,204,21,.5)
+    }
+    .verdict-copy{margin:.55rem 0 0;color:#e9d5ff}
+    .summary{margin:.8rem 0 0;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.82rem;color:var(--cyan)}
+    .share{display:flex;justify-content:center;margin-top:12px;border-radius:18px;padding:16px}
+    .transmit{min-width:min(100%,320px);padding:1rem 1.25rem;font-size:.82rem}
+    .transmit.transmitted{
+      border-color:var(--green);color:#07110a;background:linear-gradient(135deg,#d9ff57,#84f542);
+      box-shadow:0 0 10px rgba(132,245,66,.95),0 0 28px rgba(132,245,66,.75),inset 0 0 10px rgba(255,255,255,.65);
+      animation:transmitFlash .18s ease-in-out 2 alternate
+    }
+    @keyframes transmitFlash{from{transform:scale(1);filter:brightness(1)}to{transform:scale(1.025);filter:brightness(1.35)}}
+
+    @media(max-width:760px){
+      body{padding:10px}.app{padding:17px;border-radius:22px}header{flex-direction:column;text-align:center}
+      .meter-row{grid-template-columns:1fr 38px}.meter-label{grid-column:1/-1}.meter-help{display:none}.score-grid{grid-template-columns:1fr}
+    }
+    @media(max-width:500px){.meter-track{gap:3px}.pixel-block{height:36px}}
+    @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
   </style>
 </head>
-
 <body>
-  <main class="synth-app">
+  <main class="app">
     <div class="scanlines" aria-hidden="true"></div>
-    <div class="sun" aria-hidden="true"></div>
-    <div class="grid-floor" aria-hidden="true"></div>
+    <div class="scan-sweep" aria-hidden="true"></div>
+    <div class="crt-vignette" aria-hidden="true"></div>
 
     <div class="content">
       <header>
-        <div class="app-tile">
-          <img src="icon.svg" alt="Green pixel-art skull and crossbones">
-        </div>
-
+        <div class="app-tile"><img src="icon.svg" alt="Green pixel-art skull and crossbones"></div>
         <div>
-          <div class="arcade-kicker">ATMOSPHERIC DAMAGE ANALYZER</div>
-          <h1 class="arcade-title">FLAVOR</h1>
+          <div class="kicker">ATMOSPHERIC SEVERITY SYSTEM</div>
+          <h1 class="title">ASS</h1>
         </div>
-
-        <button id="music-toggle" class="music-button" type="button" aria-pressed="false">
-          ▶ START MUSIC
-        </button>
+        <button id="music-toggle" class="music" type="button" aria-pressed="false">▶ START MUSIC</button>
       </header>
 
-      <section id="flavor-bars" class="bars" aria-label="FLAVOR score controls"></section>
+      <section id="meters" class="meters" aria-label="ASS score controls"></section>
 
-      <section class="score-grid" aria-label="Score summary">
-        <div class="neon-panel">
-          <div class="panel-label">GAS CRIME CODE</div>
-          <div id="flavor-code" class="score-value">000000</div>
+      <section class="score-grid">
+        <div class="panel">
+          <div class="panel-label">ASS CODE</div>
+          <div id="code" class="score-code" aria-live="polite"><span>0</span><span>0</span><span>0</span></div>
         </div>
-
-
-        <div class="neon-panel">
+        <div class="panel">
           <div class="panel-label">FINAL CLASSIFICATION</div>
-          <div id="flavor-badge" class="result-title">😇 Administrative Error</div>
+          <div id="classification" class="classification">😇 Administrative Error</div>
         </div>
       </section>
 
-      <section class="verdict-panel" aria-live="polite">
+      <section class="verdict" aria-live="polite">
         <div id="verdict-name" class="verdict-name">😇 Administrative Error</div>
-        <p id="flavor-taunt" class="verdict-copy">
-          No measurable incident. The paperwork is somehow more dangerous than you are.
-        </p>
-        <p id="flavor-summary" class="summary-line">F 0 · L 0 · A 0 · V 0 · O 0 · R 0</p>
+        <p id="description" class="verdict-copy">No measurable incident. The atmosphere has nothing useful to report.</p>
+        <p id="summary" class="summary">A 0 · S 0 · S 0</p>
       </section>
 
-      <section class="share-panel">
-        <button id="share-button" class="arcade-button" type="button">TRANSMIT SCORE</button>
+      <section class="share">
+        <button id="transmit" class="transmit" type="button">TRANSMIT SCORE</button>
       </section>
     </div>
   </main>
@@ -503,16 +195,11 @@
     "use strict";
 
     const items = [
-      ["F","Frequency","How often did the trumpet of doom sound?"],
-      ["L","Length","How long did this cursed side quest last?"],
-      ["A","Audibility","Could witnesses identify the culprit by sound alone?"],
-      ["V","Volume","How much invisible betrayal entered the arena?"],
-      ["O","Odor","How aggressively did the air file a complaint?"],
-      ["R","Recipients","How many innocent bystanders lost faith in humanity?"]
+      ["A","Amount","How much payload entered the atmosphere?"],
+      ["S","Smell","How aggressively did the air file a complaint?"],
+      ["S","Sound","How loudly did the event announce itself?"]
     ];
 
-    // 999 score-aware classifications: every non-zero A.S.S. code (001–999)
-    // gets its own deterministic title/description based on Amount, Smell, and Sound.
     const amountBands = [
       ["Trace","a trace-sized release"],
       ["Tiny","a tiny release"],
@@ -557,29 +244,32 @@
       "Hazardous","Severe","Critical","Catastrophic","Apocalyptic"
     ];
 
-    function dominantTrait(a, smell, sound) {
-      const max = Math.max(a, smell, sound);
-      const winners = [];
-      if (a === max) winners.push("amount");
-      if (smell === max) winners.push("smell");
-      if (sound === max) winners.push("sound");
-      return winners.length === 1 ? winners[0] : "mixed";
-    }
+    const palettes = [
+      ["#22d3ee","#2563eb","#8b5cf6","rgba(34,211,238,.9)"],
+      ["#84f542","#22c55e","#0891b2","rgba(132,245,66,.95)"],
+      ["#f0abfc","#c026d3","#4f46e5","rgba(240,171,252,.9)"]
+    ];
+
+    const values = [0,0,0];
+    const meters = document.getElementById("meters");
+
+    let audioContext = null;
+    let musicTimer = null;
+    let nextNoteTime = 0;
+    let musicStep = 0;
 
     function classificationFor(a, smell, sound) {
-      // 000 is a special no-incident state. The other 999 codes are unique.
       if (a === 0 && smell === 0 && sound === 0) {
         return {
-          emoji: "😇",
-          name: "Administrative Error",
-          description: "No measurable incident. The atmosphere has nothing useful to report."
+          emoji:"😇",
+          name:"Administrative Error",
+          description:"No measurable incident. The atmosphere has nothing useful to report."
         };
       }
 
       const weighted = a * 1.15 + smell * 1.25 + sound * 1.0;
       const peak = Math.max(a, smell, sound);
       const severity = Math.min(9, Math.floor((weighted / 30.6) * 8 + peak / 9));
-      const dominant = dominantTrait(a, smell, sound);
 
       let emoji = "🌬️";
       if (severity >= 8) emoji = "💀";
@@ -590,20 +280,23 @@
       else if (severity >= 3) emoji = "🫣";
       else if (severity >= 2) emoji = "🫧";
 
-      // The title contains all three trait bands, so all 999 non-zero codes
-      // produce a distinct classification while remaining semantically legible.
-      const name =
-        `${severityRanks[severity]} ${amountBands[a][0]} / ${smellBands[smell][0]} / ${soundBands[sound][0]}`;
+      const name = `${severityRanks[severity]} ${amountBands[a][0]} / ${smellBands[smell][0]} / ${soundBands[sound][0]}`;
+
+      const max = Math.max(a, smell, sound);
+      const winners = [];
+      if (a === max) winners.push("amount");
+      if (smell === max) winners.push("smell");
+      if (sound === max) winners.push("sound");
 
       let lead;
-      if (dominant === "amount") {
-        lead = `The main problem is volume: ${amountBands[a][1]}`;
-      } else if (dominant === "smell") {
+      if (winners.length > 1) {
+        lead = `This is a multi-system incident: ${amountBands[a][1]}`;
+      } else if (winners[0] === "amount") {
+        lead = `The main problem is sheer quantity: ${amountBands[a][1]}`;
+      } else if (winners[0] === "smell") {
         lead = `The nose takes the critical hit: ${smellBands[smell][1]}`;
-      } else if (dominant === "sound") {
-        lead = `Subtlety has been killed by audio: ${soundBands[sound][1]}`;
       } else {
-        lead = `This is a balanced multi-system incident: ${amountBands[a][1]}`;
+        lead = `Subtlety has been killed by audio: ${soundBands[sound][1]}`;
       }
 
       const description =
@@ -617,137 +310,57 @@
       return classificationFor(values[0], values[1], values[2]);
     }
 
-    const palettes = [
-      ["#22d3ee","#2563eb","#8b5cf6","rgba(34,211,238,.7)"],
-      ["#a78bfa","#7c3aed","#ec4899","rgba(167,139,250,.7)"],
-      ["#facc15","#fb7185","#db2777","rgba(250,204,21,.65)"],
-      ["#67e8f9","#06b6d4","#6366f1","rgba(103,232,249,.7)"],
-      ["#84f542","#22c55e","#0891b2","rgba(132,245,66,.7)"],
-      ["#f0abfc","#c026d3","#4f46e5","rgba(240,171,252,.7)"]
-    ];
-
-    const values = [0,0,0,0,0,0];
-    const bars = document.getElementById("flavor-bars");
-
-    let audioContext = null;
-    let masterGain = null;
-    let musicTimer = null;
-    let nextNoteTime = 0;
-    let musicStep = 0;
-
-
-    async function unlockAudio() {
-      const AudioCtor = window.AudioContext || window.webkitAudioContext;
-      if (!AudioCtor) return null;
-
+    function getAudio() {
       if (!audioContext) {
-        audioContext = new AudioCtor();
-        masterGain = audioContext.createGain();
-        masterGain.gain.value = 0.72;
-        masterGain.connect(audioContext.destination);
+        const C = window.AudioContext || window.webkitAudioContext;
+        if (!C) return null;
+        audioContext = new C();
       }
-
-      if (audioContext.state === "suspended") {
-        await audioContext.resume();
-      }
-
+      if (audioContext.state === "suspended") audioContext.resume();
       return audioContext;
     }
 
-    async function playButtonSound(score) {
-      const ctx = await unlockAudio();
-      if (!ctx || !masterGain) return;
-
-      const now = ctx.currentTime + 0.005;
+    function blip(score) {
+      const ctx = getAudio();
+      if (!ctx) return;
+      const now = ctx.currentTime;
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
-
       osc.type = "square";
       osc.frequency.setValueAtTime(190 + score * 42, now);
-      osc.frequency.exponentialRampToValueAtTime(90 + score * 22, now + 0.075);
-
-      gain.gain.setValueAtTime(0.0001, now);
-      gain.gain.exponentialRampToValueAtTime(0.085, now + 0.004);
-      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.095);
-
-      osc.connect(gain).connect(masterGain);
+      osc.frequency.exponentialRampToValueAtTime(90 + score * 22, now + .075);
+      gain.gain.setValueAtTime(.0001, now);
+      gain.gain.exponentialRampToValueAtTime(.07, now + .004);
+      gain.gain.exponentialRampToValueAtTime(.0001, now + .095);
+      osc.connect(gain).connect(ctx.destination);
       osc.start(now);
-      osc.stop(now + 0.105);
+      osc.stop(now + .105);
     }
 
-    items.forEach((item, index) => {
+    items.forEach((item,index)=>{
       const row = document.createElement("div");
       row.className = "meter-row";
 
       const label = document.createElement("div");
-      label.className = "meter-label-block";
-      label.innerHTML = `
-        <div class="meter-name">${item[0]} // ${item[1]}</div>
-        <div class="meter-help">${item[2]}</div>
-      `;
+      label.className = "meter-label";
+      label.innerHTML = `<div class="meter-name">${item[0]} // ${item[1]}</div><div class="meter-help">${item[2]}</div>`;
 
       const track = document.createElement("div");
       track.className = "meter-track";
-      track.tabIndex = 0;
-      track.setAttribute("role", "slider");
-      track.setAttribute("aria-label", `${item[1]} score`);
-      track.setAttribute("aria-valuemin", "0");
-      track.setAttribute("aria-valuemax", "9");
-      track.setAttribute("aria-valuenow", "0");
 
-      for (let score = 0; score < 10; score++) {
+      for (let score=0; score<10; score++) {
         const button = document.createElement("button");
         button.type = "button";
-        button.className = "meter-level";
+        button.className = "pixel-block";
         button.dataset.score = String(score);
-        button.textContent = "";
-        button.style.setProperty("--segment-index", String(score));
-        button.title = `${item[1]}: ${score}`;
         button.setAttribute("aria-label", `${item[1]} ${score} out of 9`);
-
-        button.addEventListener("click", async () => {
-          await unlockAudio();
-          playButtonSound(score);
+        button.addEventListener("click", ()=>{
           values[index] = score;
+          blip(score);
           update();
         });
-
         track.appendChild(button);
       }
-
-      track.addEventListener("keydown", async (event) => {
-        let changed = false;
-
-        if (["ArrowRight","ArrowUp"].includes(event.key)) {
-          event.preventDefault();
-          values[index] = Math.min(9, values[index] + 1);
-          changed = true;
-        }
-
-        if (["ArrowLeft","ArrowDown"].includes(event.key)) {
-          event.preventDefault();
-          values[index] = Math.max(0, values[index] - 1);
-          changed = true;
-        }
-
-        if (event.key === "Home") {
-          event.preventDefault();
-          values[index] = 0;
-          changed = true;
-        }
-
-        if (event.key === "End") {
-          event.preventDefault();
-          values[index] = 9;
-          changed = true;
-        }
-
-        if (changed) {
-          await unlockAudio();
-          playButtonSound(values[index]);
-          update();
-        }
-      });
 
       const value = document.createElement("div");
       value.id = `meter-value-${index}`;
@@ -755,56 +368,49 @@
       value.textContent = "0";
 
       row.append(label, track, value);
-      bars.appendChild(row);
+      meters.appendChild(row);
     });
 
-    function animateScoreCode(nextCode) {
-      const codeEl = document.getElementById("flavor-code");
-      if (codeEl.textContent === nextCode) return;
-      codeEl.textContent = nextCode;
-      codeEl.classList.remove("digit-pop");
-      void codeEl.offsetWidth;
-      codeEl.classList.add("digit-pop");
+    function animateCode(code) {
+      document.querySelectorAll("#code span").forEach((span,index)=>{
+        const next = code[index];
+        if (span.textContent !== next) {
+          span.textContent = next;
+          span.classList.remove("roll");
+          void span.offsetWidth;
+          span.classList.add("roll");
+        }
+      });
     }
 
     function update() {
-      let total = 0;
-
-      document.querySelectorAll(".meter-track").forEach((track, index) => {
+      document.querySelectorAll(".meter-track").forEach((track,index)=>{
         const value = values[index];
         const palette = palettes[index];
-        total += value;
-
-        track.style.setProperty(
-          "--meter-gradient",
-          `linear-gradient(135deg,${palette[0]},${palette[1]} 52%,${palette[2]})`
-        );
+        track.style.setProperty("--meter-gradient", `linear-gradient(135deg,${palette[0]},${palette[1]} 52%,${palette[2]})`);
         track.style.setProperty("--meter-glow", palette[3]);
-        track.setAttribute("aria-valuenow", String(value));
 
-        track.querySelectorAll(".meter-level").forEach((level) => {
-          const score = Number(level.dataset.score);
-          level.classList.toggle("active", score <= value && value > 0);
-          level.classList.toggle("selected", score === value);
-          level.style.opacity =
-            score <= value && value > 0 ? String(0.48 + score * 0.058) : "1";
+        track.querySelectorAll(".pixel-block").forEach(block=>{
+          const score = Number(block.dataset.score);
+          block.classList.toggle("active", score <= value && value > 0);
+          block.classList.toggle("selected", score === value);
+          block.style.opacity = score <= value && value > 0 ? String(.5 + score * .055) : "1";
         });
 
         document.getElementById(`meter-value-${index}`).textContent = String(value);
       });
 
-      animateScoreCode(values.join(""));
-      const classification = currentClassification();
-      document.getElementById("flavor-badge").textContent = `${classification.emoji} ${classification.name}`;
-      document.getElementById("verdict-name").textContent = `${classification.emoji} ${classification.name}`;
-      document.getElementById("flavor-taunt").textContent = classification.description;
-      document.getElementById("flavor-summary").textContent =
-        `F ${values[0]} · L ${values[1]} · A ${values[2]} · V ${values[3]} · O ${values[4]} · R ${values[5]}`;
+      const c = currentClassification();
+      animateCode(values.join(""));
+      document.getElementById("classification").textContent = `${c.emoji} ${c.name}`;
+      document.getElementById("verdict-name").textContent = `${c.emoji} ${c.name}`;
+      document.getElementById("description").textContent = c.description;
+      document.getElementById("summary").textContent = `A ${values[0]} · S ${values[1]} · S ${values[2]}`;
     }
 
     function getShareText() {
-      const classification = currentClassification();
-      return `${values.join("")}\n${classification.emoji} ${classification.name}`;
+      const c = currentClassification();
+      return `${values.join("")}\n${c.emoji} ${c.name}`;
     }
 
     async function copyText(text) {
@@ -812,36 +418,30 @@
         await navigator.clipboard.writeText(text);
         return true;
       }
-
-      const temporary = document.createElement("textarea");
-      temporary.value = text;
-      temporary.setAttribute("readonly", "");
-      temporary.style.position = "fixed";
-      temporary.style.opacity = "0";
-      document.body.appendChild(temporary);
-      temporary.select();
-
+      const t = document.createElement("textarea");
+      t.value = text;
+      t.setAttribute("readonly","");
+      t.style.position = "fixed";
+      t.style.opacity = "0";
+      document.body.appendChild(t);
+      t.select();
       const copied = document.execCommand("copy");
-      temporary.remove();
+      t.remove();
       return copied;
     }
 
     function confirmTransmission(button) {
-      const original = "TRANSMIT SCORE";
       button.classList.add("transmitted");
       button.textContent = "✓ TRANSMITTED";
-
-      window.setTimeout(() => {
+      setTimeout(()=>{
         button.classList.remove("transmitted");
-        button.textContent = original;
-      }, 2000);
+        button.textContent = "TRANSMIT SCORE";
+      },2000);
     }
 
-    async function shareScore() {
-      const button = document.getElementById("share-button");
-      await unlockAudio();
-      playButtonSound(9);
-
+    document.getElementById("transmit").addEventListener("click", async ()=>{
+      const button = document.getElementById("transmit");
+      blip(9);
       const text = getShareText();
 
       if (navigator.share) {
@@ -849,149 +449,71 @@
           await navigator.share({ text });
           confirmTransmission(button);
           return;
-        } catch (error) {
-          if (error && error.name === "AbortError") return;
+        } catch (e) {
+          if (e && e.name === "AbortError") return;
         }
       }
 
       try {
-        const copied = await copyText(text);
-        if (!copied) throw new Error("Copy command failed");
+        const ok = await copyText(text);
+        if (!ok) throw new Error("copy failed");
         confirmTransmission(button);
-      } catch (error) {
+      } catch {
         button.textContent = "COPY FAILED";
-        window.setTimeout(() => {
-          button.textContent = "TRANSMIT SCORE";
-        }, 2000);
+        setTimeout(()=>button.textContent="TRANSMIT SCORE",2000);
       }
-    }
+    });
 
-    document.getElementById("share-button").addEventListener("click", shareScore);
+    const riff=[40,40,43,40,46,45,43,38,40,40,47,46,43,42,38,35];
+    const noteToFreq=note=>440*Math.pow(2,(note-69)/12);
 
-    const riff = [
-      40,40,43,40,46,45,43,38,
-      40,40,47,46,43,42,38,35,
-      40,43,46,47,46,43,40,38,
-      35,38,40,43,35,34,31,28
-    ];
-
-    const bass = [28,28,31,31,26,26,24,23];
-
-    function noteToFreq(note) {
-      return 440 * Math.pow(2, (note - 69) / 12);
-    }
-
-    function tone(note, time, duration, type, volume, detune = 0) {
-      const osc = audioContext.createOscillator();
-      const gain = audioContext.createGain();
-      const filter = audioContext.createBiquadFilter();
-
-      osc.type = type;
-      osc.frequency.setValueAtTime(noteToFreq(note), time);
-      osc.detune.setValueAtTime(detune, time);
-
-      filter.type = "lowpass";
-      filter.frequency.setValueAtTime(type === "sawtooth" ? 850 : 1500, time);
-
-      gain.gain.setValueAtTime(0.0001, time);
-      gain.gain.exponentialRampToValueAtTime(volume, time + 0.005);
-      gain.gain.exponentialRampToValueAtTime(0.0001, time + duration);
-
-      osc.connect(filter).connect(gain).connect(masterGain);
+    function tone(note,time,duration,type,volume){
+      const ctx=getAudio();
+      if(!ctx)return;
+      const osc=ctx.createOscillator();
+      const gain=ctx.createGain();
+      osc.type=type;
+      osc.frequency.setValueAtTime(noteToFreq(note),time);
+      gain.gain.setValueAtTime(.0001,time);
+      gain.gain.exponentialRampToValueAtTime(volume,time+.005);
+      gain.gain.exponentialRampToValueAtTime(.0001,time+duration);
+      osc.connect(gain).connect(ctx.destination);
       osc.start(time);
-      osc.stop(time + duration + 0.03);
+      osc.stop(time+duration+.03);
     }
 
-    function kick(time) {
-      const osc = audioContext.createOscillator();
-      const gain = audioContext.createGain();
-
-      osc.type = "sine";
-      osc.frequency.setValueAtTime(170, time);
-      osc.frequency.exponentialRampToValueAtTime(38, time + 0.13);
-
-      gain.gain.setValueAtTime(0.18, time);
-      gain.gain.exponentialRampToValueAtTime(0.0001, time + 0.15);
-
-      osc.connect(gain).connect(masterGain);
-      osc.start(time);
-      osc.stop(time + 0.16);
-    }
-
-    function noiseHit(time, volume, duration) {
-      const length = Math.floor(audioContext.sampleRate * duration);
-      const buffer = audioContext.createBuffer(1, length, audioContext.sampleRate);
-      const data = buffer.getChannelData(0);
-
-      for (let i = 0; i < length; i++) {
-        data[i] = (Math.random() * 2 - 1) * (1 - i / length);
-      }
-
-      const source = audioContext.createBufferSource();
-      const filter = audioContext.createBiquadFilter();
-      const gain = audioContext.createGain();
-
-      source.buffer = buffer;
-      filter.type = "highpass";
-      filter.frequency.value = 1200;
-
-      gain.gain.setValueAtTime(volume, time);
-      gain.gain.exponentialRampToValueAtTime(0.0001, time + duration);
-
-      source.connect(filter).connect(gain).connect(masterGain);
-      source.start(time);
-    }
-
-    function scheduleMusic() {
-      const stepDuration = 0.102;
-
-      while (nextNoteTime < audioContext.currentTime + 0.15) {
-        const position = musicStep % riff.length;
-        const note = riff[position];
-
-        tone(note, nextNoteTime, 0.09, "square", 0.055);
-        tone(note - 12, nextNoteTime, 0.1, "sawtooth", 0.034, -9);
-        tone(note - 12, nextNoteTime, 0.1, "sawtooth", 0.03, 9);
-
-        if (musicStep % 2 === 0) {
-          tone(bass[Math.floor(musicStep / 4) % bass.length], nextNoteTime, 0.18, "triangle", 0.05);
-        }
-
-        if (musicStep % 4 === 0) kick(nextNoteTime);
-        if (musicStep % 8 === 4) noiseHit(nextNoteTime, 0.075, 0.09);
-        if (musicStep % 2 === 1) noiseHit(nextNoteTime, 0.014, 0.025);
-
-        nextNoteTime += stepDuration;
+    function scheduleMusic(){
+      const ctx=getAudio();
+      if(!ctx)return;
+      while(nextNoteTime<ctx.currentTime+.14){
+        const note=riff[musicStep%riff.length];
+        tone(note,nextNoteTime,.09,"square",.045);
+        tone(note-12,nextNoteTime,.1,"sawtooth",.022);
+        if(musicStep%4===0)tone(note-24,nextNoteTime,.18,"triangle",.035);
+        nextNoteTime+=.105;
         musicStep++;
       }
     }
 
-    async function toggleMusic() {
-      const button = document.getElementById("music-toggle");
-      const ctx = await unlockAudio();
-      if (!ctx) {
-        button.textContent = "AUDIO UNSUPPORTED";
-        return;
-      }
+    document.getElementById("music-toggle").addEventListener("click",()=>{
+      const button=document.getElementById("music-toggle");
+      const ctx=getAudio();
+      if(!ctx){button.textContent="AUDIO UNSUPPORTED";return}
 
-      if (musicTimer) {
+      if(musicTimer){
         clearInterval(musicTimer);
-        musicTimer = null;
-        button.setAttribute("aria-pressed", "false");
-        button.textContent = "▶ START MUSIC";
-        playButtonSound(2);
-      } else {
-        playButtonSound(9);
-        nextNoteTime = ctx.currentTime + 0.08;
-        musicStep = 0;
+        musicTimer=null;
+        button.setAttribute("aria-pressed","false");
+        button.textContent="▶ START MUSIC";
+      }else{
+        nextNoteTime=ctx.currentTime+.05;
+        musicStep=0;
         scheduleMusic();
-        musicTimer = window.setInterval(scheduleMusic, 40);
-        button.setAttribute("aria-pressed", "true");
-        button.textContent = "■ STOP MUSIC";
+        musicTimer=setInterval(scheduleMusic,45);
+        button.setAttribute("aria-pressed","true");
+        button.textContent="■ STOP MUSIC";
       }
-    }
-
-    document.getElementById("music-toggle").addEventListener("click", toggleMusic);
+    });
 
     update();
   </script>

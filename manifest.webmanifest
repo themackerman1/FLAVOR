@@ -1,7 +1,7 @@
 {
-  "name": "FLAVOR",
-  "short_name": "FLAVOR",
-  "description": "Atmospheric damage analyzer.",
+  "name": "ASS",
+  "short_name": "ASS",
+  "description": "Atmospheric Severity System.",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#050312",
