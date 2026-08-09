@@ -1,9 +1,19 @@
-# ASS — MATT-ASS-TROPHE Build
+# ASS — Short Headline Build
 
-Special result added:
+Headline direction:
+- five words maximum
+- aim for two to four words
+- simpler sardonic phrases
+- fewer generated adjective chains
 
-989
-MATT-ASS-TROPHE
-Matt came. He farted. He conquered.
+Reference tone now includes:
+- An unapologetic delivery
+- A putrescent wind
+- You should be ashamed
+- Duck and cover
+- Hide your kids
 
-The six-word headline maximum remains in place for all results.
+Two exact special results are preserved:
+- 919 — A big loud nothing
+- 989 — MATT-ASS-TROPHE
+  Matt came. He farted. He conquered.

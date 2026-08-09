@@ -253,122 +253,170 @@
     let nextNoteTime = 0;
     let musicStep = 0;
 
-    const amountTone = [
-      "barely registered","tiny","small","modest","respectable",
-      "substantial","big","huge","massive","absurdly large"
-    ];
-    const smellTone = [
-      "odorless","nearly innocent","faintly suspicious","noticeably funky","properly stinky",
-      "seriously rank","nose hostile","chemically rude","room clearing","morally indefensible"
-    ];
-    const soundTone = [
-      "silent","almost silent","quiet","audible","obvious",
-      "loud","booming","thunderous","deafening","cataclysmic"
-    ];
-
-    const openings = [
-      "Nobody needed this",
-      "A bold use of oxygen",
-      "The room has questions",
-      "Nature made a clerical error",
-      "An avoidable little chapter",
-      "The furniture will remember",
-      "Somewhere, a window opened itself",
-      "The dog has retained counsel",
-      "Your alibi needs work",
-      "The atmosphere has filed paperwork",
-      "A deeply unserious emergency",
-      "Proof that confidence is not competence",
-      "The air deserved better",
-      "A personal attack on indoor spaces",
-      "An argument for better ventilation",
-      "This meeting could have been an email",
-      "A regrettable contribution to science",
-      "The room is now part of the investigation",
-      "An unsolicited atmospheric update",
-      "A terrible way to become memorable"
-    ];
-
-    const quietJokes = [
-      "Stealth mode was unfortunately successful",
-      "Nobody heard it, which makes the evidence worse",
-      "A whisper with criminal intent",
-      "Quietly making enemies",
-      "The silent treatment has consequences",
-      "Subtle delivery, unsubtle aftermath",
-      "An invisible memo from your intestines",
-      "No announcement, just consequences",
-      "A covert operation with terrible funding",
-      "The room found out the hard way"
-    ];
-
-    const loudJokes = [
-      "The fart has a sound system",
-      "Subtlety was not in the budget",
-      "An entrance nobody requested",
-      "Apparently this needed surround sound",
-      "The acoustics are now accomplices",
-      "A standing ovation from one butt",
-      "The room heard the warning too late",
-      "All announcement, questionable achievement",
-      "A noise complaint with a backstory",
-      "Your dignity just hit maximum volume"
-    ];
-
-    const stinkJokes = [
-      "Your nose has entered the boss fight",
-      "The smell arrived with legal representation",
-      "A scent with hostile intentions",
-      "The air is reconsidering its career",
-      "Someone weaponized the concept of indoors",
-      "The room now has a villain origin story",
-      "Your nostrils have requested hazard pay",
-      "The evidence is aggressively airborne",
-      "A smell with absolutely no respect for boundaries",
-      "Ventilation has become a survival mechanic"
-    ];
-
-    const cleanJokes = [
-      "All spectacle, no evidence",
-      "A suspicious amount of nothing",
-      "Big performance, clean getaway",
-      "The nose has been mercifully excluded",
-      "A victimless crime, chemically speaking",
-      "Nothing to smell here, officer",
-      "An empty threat with production values",
-      "The air remains weirdly innocent",
-      "A lot of confidence for no aroma",
-      "The nose gets the day off"
-    ];
-
-    const bigJokes = [
-      "Quantity has mistaken itself for talent",
-      "An industrial amount of poor judgment",
-      "The payload has its own zip code",
-      "A heroic quantity of absolutely nobody asked",
-      "This could have been several smaller mistakes",
-      "The volume knob was apparently structural",
-      "An unreasonable amount of atmosphere changed teams",
-      "Go big or go outside",
-      "The sheer commitment is upsetting",
-      "A bulk shipment of consequences"
-    ];
-
-    const tinyJokes = [
-      "A technicality with ambitions",
-      "Travel size disappointment",
-      "Barely enough fart to form an opinion",
-      "A rounding error with confidence",
-      "Small fart, full benefits package",
-      "The appetizer nobody ordered",
-      "A sample size of bad judgment",
-      "More concept than fart",
-      "Tiny footprint, unnecessary legacy",
-      "An extremely local incident"
+    const simpleHeadlines = [
+      "An unapologetic delivery",
+      "A putrescent wind",
+      "You should be ashamed",
+      "Duck and cover",
+      "Hide your kids",
+      "A hostile breeze",
+      "Poor life choices",
+      "Open a window",
+      "Leave the room",
+      "Absolutely shameless",
+      "A foul development",
+      "This seems personal",
+      "A bad omen",
+      "Airborne regret",
+      "A cruel breeze",
+      "Nobody deserved this",
+      "A public nuisance",
+      "Deeply unnecessary",
+      "An ugly little secret",
+      "A regrettable breeze",
+      "The room objects",
+      "Your dignity left",
+      "A toxic whisper",
+      "A suspicious gust",
+      "A nasty surprise",
+      "A terrible contribution",
+      "An indoor emergency",
+      "The air surrendered",
+      "A rude awakening",
+      "A fragrant betrayal",
+      "A bold mistake",
+      "An aromatic crime",
+      "A chemical insult",
+      "A personal attack",
+      "A gaseous warning",
+      "A grim forecast",
+      "A rotten breeze",
+      "A pungent announcement",
+      "A stinking achievement",
+      "A questionable victory",
+      "A loud mistake",
+      "A silent menace",
+      "An awful whisper",
+      "A room clearer",
+      "A nose offender",
+      "A social disaster",
+      "A biological complaint",
+      "An unfortunate event",
+      "A foul choice",
+      "A bad decision",
+      "A terrible idea",
+      "A minor atrocity",
+      "A major offense",
+      "A gross achievement",
+      "A rotten decision",
+      "An airborne offense",
+      "A nasty little cloud",
+      "A pungent mistake",
+      "A foul announcement",
+      "A toxic announcement",
+      "A shameless gust",
+      "A hostile cloud",
+      "A grim little cloud",
+      "A rancid breeze",
+      "A vile contribution",
+      "A disgusting success",
+      "A fragrant disaster",
+      "A rotten surprise",
+      "A terrible breeze",
+      "A gaseous offense",
+      "A foul performance",
+      "A cruel little cloud",
+      "A rude little cloud",
+      "A toxic little cloud",
+      "A pungent little cloud",
+      "A hostile little cloud",
+      "A nasty little breeze",
+      "A shameless little breeze",
+      "A deeply foul breeze",
+      "A profoundly bad breeze",
+      "An aggressive little gust",
+      "An offensive little gust",
+      "A suspicious little gust",
+      "A deeply rude gust",
+      "A criminal little breeze",
+      "An indecent little cloud",
+      "An unnecessary little cloud",
+      "A regrettable little gust",
+      "A contemptible breeze",
+      "An antisocial breeze",
+      "A merciless little cloud",
+      "A brutal little gust",
+      "A cursed little breeze",
+      "A wicked little cloud",
+      "A sinister little gust",
+      "A malicious breeze",
+      "An ominous little cloud",
+      "A disgraceful breeze",
+      "A shameful little gust",
+      "An unholy little cloud",
+      "A doomed little breeze",
+      "A hazardous breeze",
+      "A poisonous little gust",
+      "A savage little cloud",
+      "A catastrophic breeze",
+      "A terminal little gust",
+      "An apocalyptic breeze"
     ];
 
-    function pick(list, code, salt) {
-      return list[(code * (salt * 2 + 1) + salt * 17) % list.length];
+    const tinyHeadlines = [
+      "Barely a fart",
+      "A tiny offense",
+      "A minor incident",
+      "Almost respectable",
+      "A small betrayal",
+      "A little mistake",
+      "A modest offense",
+      "A quiet failure",
+      "A tiny warning",
+      "An awkward puff"
+    ];
+
+    const loudHeadlines = [
+      "Duck and cover",
+      "Everybody heard that",
+      "Subtlety is dead",
+      "A loud mistake",
+      "The walls noticed",
+      "An acoustic offense",
+      "A thunderous error",
+      "No indoor voice",
+      "A rude announcement",
+      "The room heard"
+    ];
+
+    const stinkHeadlines = [
+      "A putrescent wind",
+      "Open a window",
+      "Your nose objects",
+      "A fragrant betrayal",
+      "A nasal emergency",
+      "The stink wins",
+      "A rotten development",
+      "A pungent offense",
+      "A foul surprise",
+      "Breathing was optional"
+    ];
+
+    const bigHeadlines = [
+      "An unapologetic delivery",
+      "A substantial mistake",
+      "An ambitious payload",
+      "A major contribution",
+      "Far too much",
+      "A bulk offense",
+      "An excessive delivery",
+      "A massive mistake",
+      "A serious deposit",
+      "An unreasonable amount"
+    ];
+
+    function pickHeadline(list, code, salt) {
+      return list[(code * (salt * 2 + 1) + salt * 13) % list.length];
     }
 
     function classificationFor(a, smell, sound) {
@@ -397,88 +445,27 @@
 
       let name;
 
-      // Hand authored anchors and extreme combinations.
-      const anchors = {
-        1:"A technicality",
-        9:"One molecule with a megaphone",
-        10:"Your nose filed a minor complaint",
-        90:"Nothing happened. Your nose disagrees.",
-        99:"Pure evil, travel size",
-        100:"Big dreams. Zero follow through.",
-        109:"All bark and no stink",
-        190:"Small package, terrible contents",
-        500:"Big fart. Zero personality.",
-        900:"A heroic amount of nothing",
-        909:"All thunder, no consequences",
-        919:"A big loud nothing",
-        989:"MATT-ASS-TROPHE",
-        990:"The silent evacuation",
-        999:"Everybody loses"
-      };
-
-      if (anchors[code]) {
-        name = anchors[code];
+      // Two exact easter eggs remain untouched.
+      if (code === 919) {
+        name = "A big loud nothing";
+      } else if (code === 989) {
+        name = "MATT-ASS-TROPHE";
+      } else if (a <= 2 && smell <= 2 && sound <= 2) {
+        name = pickHeadline(tinyHeadlines, code, 1);
+      } else if (sound >= 7 && sound >= smell && sound >= a) {
+        name = pickHeadline(loudHeadlines, code, 2);
+      } else if (smell >= 7 && smell >= sound && smell >= a) {
+        name = pickHeadline(stinkHeadlines, code, 3);
+      } else if (a >= 7 && a >= smell && a >= sound) {
+        name = pickHeadline(bigHeadlines, code, 4);
       } else {
-        const dominant = Math.max(a, smell, sound);
-        const tied = [a,smell,sound].filter(v => v === dominant).length > 1;
-        const structure = code % 10;
+        name = pickHeadline(simpleHeadlines, code, 5);
+      }
 
-        // Different score shapes use genuinely different joke families and sentence structures.
-        if (a >= 8 && smell <= 2 && sound >= 7) {
-          name = pick(cleanJokes, code, 1);
-        } else if (a >= 8 && smell >= 7 && sound <= 2) {
-          name = pick(stinkJokes, code, 2);
-        } else if (a <= 2 && smell >= 7 && sound >= 7) {
-          name = pick(stinkJokes, code, 3);
-        } else if (sound >= 8 && smell <= 3) {
-          name = pick(loudJokes, code, 4);
-        } else if (smell >= 8 && sound <= 3) {
-          name = pick(quietJokes, code, 5);
-        } else if (a >= 8 && smell <= 3 && sound <= 3) {
-          name = pick(bigJokes, code, 6);
-        } else if (a <= 2 && smell <= 3 && sound <= 3) {
-          name = pick(tinyJokes, code, 7);
-        } else if (smell > a && smell > sound) {
-          name = pick(stinkJokes, code, 8);
-        } else if (sound > a && sound > smell) {
-          name = pick(loudJokes, code, 9);
-        } else if (a > smell && a > sound) {
-          name = pick(bigJokes, code, 10);
-        } else if (tied && dominant >= 7) {
-          name = pick(openings, code, 11);
-        } else {
-          // Ten deliberately different grammatical structures.
-          const forms = [
-            () => pick(openings, code, 12),
-            () => `${pick(openings, code, 13)}. ${pick(cleanJokes, code, 2)}`,
-            () => smell >= 5 ? pick(stinkJokes, code, 14) : pick(quietJokes, code, 14),
-            () => sound >= 5 ? pick(loudJokes, code, 15) : pick(tinyJokes, code, 15),
-            () => a >= 5 ? pick(bigJokes, code, 16) : pick(tinyJokes, code, 16),
-            () => `Somehow ${amountTone[a]} was still too much`,
-            () => `A ${soundTone[sound]} reminder that choices have consequences`,
-            () => `The ${smellTone[smell]} part is really doing the damage here`,
-            () => `Congratulations. The room now knows too much`,
-            () => `Nobody wins, but the ventilation loses hardest`
-          ];
-          name = forms[structure]();
-        }
-
-        // Guarantee headline uniqueness without turning the visible copy into stat soup.
-        // If a naturally repeated joke occurs, append one of many short human sounding codas
-        // derived from the exact score.
-        const codas = [
-          "Somehow worse in context",
-          "Nobody asked",
-          "A choice was made",
-          "The room objects",
-          "Please explain yourself",
-          "History will not care",
-          "The dog declines comment",
-          "Windows are now mandatory",
-          "Confidence was misplaced",
-          "This felt unnecessary"
-        ];
-        name = `${name}. ${codas[(a + smell * 3 + sound * 7) % codas.length]}`;
+      // Five words maximum. Most authored headlines are 2–4 words.
+      const headlineWords = name.trim().split(/\s+/);
+      if (headlineWords.length > 5) {
+        name = headlineWords.slice(0, 5).join(" ").replace(/[.,;:!?]+$/, "");
       }
 
       let description;
@@ -534,12 +521,6 @@
           pick(openings, code, 21);
 
         description = `${amountLine}, ${smellLine}, and ${soundLine}. ${closer}.`;
-      }
-
-      // Headlines are capped at six words, no exceptions.
-      const words = name.trim().split(/\s+/);
-      if (words.length > 6) {
-        name = words.slice(0, 6).join(" ").replace(/[.,;:!?]+$/, "");
       }
 
       return { emoji, name, description };
