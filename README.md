@@ -1,23 +1,14 @@
 # ASS — Atmospheric Severity System
 
-Rebuilt with short, sardonic, trait-aware classifications.
+Classification cleanup build.
 
-Inputs:
-- A — Amount
-- S — Smell
-- S — Sound
+The classification titles now use plain English only:
+- no hyphenated stat words
+- no slash separated labels
+- no backslashes
+- no RPG style compound descriptors
 
-The classifier evaluates the shape of the score, not just its total.
-Extreme mismatches get custom punchlines.
+919 is exactly:
+A big loud nothing
 
-Examples:
-- 919 → A big loud nothing
-- high amount + high smell + low sound → Huge, silent, absolutely unforgivable
-- low amount + low smell + high sound → All bark. No stink.
-- 999 → Everybody loses
-
-The supporting description remains score-aware, while the main classification stays short and conversational.
-
-Share output remains only:
-three-digit code
-emoji + classification
+The app still uses Amount, Smell, and Sound independently to choose the joke and supporting description.

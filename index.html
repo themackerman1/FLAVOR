@@ -201,7 +201,7 @@
     ];
 
     const amountBands = [
-      ["Trace","a trace-sized release"],
+      ["Trace","a trace sized release"],
       ["Tiny","a tiny release"],
       ["Small","a small but definite release"],
       ["Moderate","a moderate atmospheric payload"],
@@ -209,7 +209,7 @@
       ["Massive","a massive atmospheric payload"],
       ["Severe","a severe volume event"],
       ["Extreme","an extreme volume event"],
-      ["Catastrophic","a room-dominating payload"],
+      ["Catastrophic","a room dominating payload"],
       ["Apocalyptic","a maximum-output atmospheric event"]
     ];
 
@@ -221,9 +221,9 @@
       ["Rank","with a rank odor"],
       ["Noxious","with a noxious smell"],
       ["Toxic","with an aggressively toxic stink"],
-      ["Biohazard","with a biohazard-grade odor"],
-      ["Plague","with a room-clearing plague cloud"],
-      ["Extinction","with an extinction-tier stench"]
+      ["Biohazard","with a biohazard grade odor"],
+      ["Plague","with a room clearing plague cloud"],
+      ["Extinction","with an extinction tier stench"]
     ];
 
     const soundBands = [
@@ -234,9 +234,9 @@
       ["Blatant","and an unmistakable report"],
       ["Thunder","and a thunderous announcement"],
       ["Detonation","and a concussive blast"],
-      ["Air-Raid","and an alarmingly violent report"],
-      ["Siege","and a room-commanding sonic event"],
-      ["Doom","and a maximum-volume apocalypse"]
+      ["Air Raid","and an alarmingly violent report"],
+      ["Siege","and a room commanding sonic event"],
+      ["Doom","and a maximum volume apocalypse"]
     ];
 
     const severityRanks = [
@@ -261,53 +261,134 @@
     function classificationFor(a, smell, sound) {
       if (a === 0 && smell === 0 && sound === 0) {
         return {
-          emoji:"😇",
-          name:"Administrative Error",
-          description:"No measurable incident. The atmosphere has nothing useful to report."
+          emoji: "😇",
+          name: "Nothing happened",
+          description: "Against all odds, the air remains innocent."
         };
       }
 
-      const weighted = a * 1.15 + smell * 1.25 + sound * 1.0;
+      const weighted = a * 1.15 + smell * 1.25 + sound;
       const peak = Math.max(a, smell, sound);
       const severity = Math.min(9, Math.floor((weighted / 30.6) * 8 + peak / 9));
 
-      let emoji = "🌬️";
+      let emoji = "💨";
       if (severity >= 8) emoji = "💀";
       else if (severity >= 7) emoji = "☣️";
-      else if (severity >= 6) emoji = "⚠️";
+      else if (severity >= 6) emoji = "🤢";
       else if (severity >= 5) emoji = "😵";
-      else if (severity >= 4) emoji = "🥴";
-      else if (severity >= 3) emoji = "🫣";
-      else if (severity >= 2) emoji = "🫧";
+      else if (severity >= 3) emoji = "😏";
+      else if (severity <= 1) emoji = "🤏";
 
-      const amountNouns = ["Wisp","Puff","Pocket","Cloud","Burst","Surge","Wave","Deluge","Maelstrom","Cataclysm"];
-      const smellAdjectives = ["Clean","Faint","Noticeable","Funky","Rank","Noxious","Toxic","Biohazard","Plagueborn","Extinction"];
-      const soundAdjectives = ["Silent","Whispering","Murmuring","Rattling","Blatant","Thunderous","Explosive","Siren-Loud","Siege-Loud","Doom-Loud"];
+      const amount = [
+        "barely any",
+        "a tiny",
+        "a little",
+        "a small",
+        "a modest",
+        "a decent",
+        "a big",
+        "a huge",
+        "a massive",
+        "an enormous"
+      ];
 
-      // One readable phrase, with all three digits encoded into the wording.
-      // This keeps all 999 non-zero classifications unique without slash-separated labels.
-      const name = `${severityRanks[severity]} ${smellAdjectives[smell]} ${soundAdjectives[sound]} ${amountNouns[a]}`;
+      const noise = [
+        "silent",
+        "hushed",
+        "quiet",
+        "audible",
+        "obvious",
+        "loud",
+        "booming",
+        "thunderous",
+        "deafening",
+        "apocalyptic"
+      ];
 
-      const max = Math.max(a, smell, sound);
-      const winners = [];
-      if (a === max) winners.push("amount");
-      if (smell === max) winners.push("smell");
-      if (sound === max) winners.push("sound");
+      const odor = [
+        "nothing",
+        "whiff",
+        "hint",
+        "funk",
+        "stink",
+        "reek",
+        "stench",
+        "hazard",
+        "nightmare",
+        "crime scene"
+      ];
 
-      let lead;
-      if (winners.length > 1) {
-        lead = `This is a multi-system incident: ${amountBands[a][1]}`;
-      } else if (winners[0] === "amount") {
-        lead = `The main problem is sheer quantity: ${amountBands[a][1]}`;
-      } else if (winners[0] === "smell") {
-        lead = `The nose takes the critical hit: ${smellBands[smell][1]}`;
+      let name;
+
+      // Strong pattern jokes first.
+      if (a === 9 && smell === 1 && sound === 9) {
+        name = "A big loud nothing";
+      } else if (a >= 8 && smell <= 1 && sound >= 8) {
+        name = "A huge noise about nothing";
+      } else if (a >= 8 && smell >= 8 && sound <= 1) {
+        name = "Huge, silent, and completely unforgivable";
+      } else if (a <= 1 && smell >= 8 && sound >= 8) {
+        name = "Tiny fart, enormous hostility";
+      } else if (a >= 8 && smell <= 1 && sound <= 1) {
+        name = "Massive effort, absolutely no payoff";
+      } else if (a <= 1 && smell <= 1 && sound >= 8) {
+        name = "All bark and no stink";
+      } else if (a <= 1 && smell >= 8 && sound <= 1) {
+        name = "Small package, terrible contents";
+      } else if (a >= 8 && smell >= 8 && sound >= 8) {
+        name = "Everybody loses";
+      } else if (smell >= 8 && sound <= 2) {
+        name = "Silent but deeply disrespectful";
+      } else if (sound >= 8 && smell <= 2) {
+        name = "Loud enough to scare you, clean enough to confuse you";
+      } else if (a >= 8 && smell <= 2) {
+        name = "A whole lot of fart with nowhere to smell";
+      } else if (a <= 2 && sound >= 8) {
+        name = "A tiny fart with stadium speakers";
+      } else if (a <= 2 && smell >= 8) {
+        name = "Almost nothing, somehow still disgusting";
+      } else if (smell >= 8 && sound >= 8) {
+        name = "It smells terrible and brought a microphone";
+      } else if (a >= 8 && sound >= 8) {
+        name = "Big, loud, and proud of itself";
+      } else if (a >= 8 && smell >= 8) {
+        name = "Big stink, bigger mistake";
+      } else if (smell >= 7 && sound <= 3) {
+        name = "Quiet enough to deny, bad enough to remember";
+      } else if (sound >= 7 && smell <= 3) {
+        name = "Mostly noise, mercifully";
+      } else if (a >= 7 && smell <= 3 && sound <= 3) {
+        name = "A lot happened and somehow none of it mattered";
+      } else if (a <= 3 && smell <= 3 && sound <= 3) {
+        name = "Barely worth blaming on the dog";
+      } else if (smell >= 6 && smell > a && smell > sound) {
+        name = "Your nose is doing all the suffering";
+      } else if (sound >= 6 && sound > a && sound > smell) {
+        name = "More announcement than achievement";
+      } else if (a >= 6 && a > smell && a > sound) {
+        name = "A heroic amount of absolutely nothing useful";
       } else {
-        lead = `Subtlety has been killed by audio: ${soundBands[sound][1]}`;
+        // Simple fallback sentence. No slashes, no hyphens, no stacked stat labels.
+        name = `${amount[a]} ${noise[sound]} ${odor[smell]}`;
+        name = name.charAt(0).toUpperCase() + name.slice(1);
       }
 
-      const description =
-        `${lead}, ${smellBands[smell][1]}, ${soundBands[sound][1]}. ` +
-        `Threat assessment: ${severityRanks[severity].toLowerCase()}.`;
+      let description;
+      if (a === 9 && smell === 1 && sound === 9) {
+        description = "Huge payload. Huge noise. Almost no smell. An empty threat with excellent speakers.";
+      } else if (smell >= a && smell >= sound && smell >= 6) {
+        description = "The smell is doing the heavy lifting. Your nose did not volunteer for this.";
+      } else if (sound >= a && sound >= smell && sound >= 6) {
+        description = "The sound is the headline. Subtlety left before anyone could ask questions.";
+      } else if (a >= smell && a >= sound && a >= 6) {
+        description = "Quantity is carrying the performance. Impressive effort. Questionable purpose.";
+      } else if (severity <= 2) {
+        description = "More inconvenience than incident. Civilization should recover.";
+      } else if (severity <= 5) {
+        description = "The room noticed. Nobody is proud of that fact.";
+      } else {
+        description = "The atmosphere would like to speak to a manager.";
+      }
 
       return { emoji, name, description };
     }
