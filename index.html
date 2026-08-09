@@ -280,7 +280,13 @@
       else if (severity >= 3) emoji = "🫣";
       else if (severity >= 2) emoji = "🫧";
 
-      const name = `${severityRanks[severity]} ${amountBands[a][0]} / ${smellBands[smell][0]} / ${soundBands[sound][0]}`;
+      const amountNouns = ["Wisp","Puff","Pocket","Cloud","Burst","Surge","Wave","Deluge","Maelstrom","Cataclysm"];
+      const smellAdjectives = ["Clean","Faint","Noticeable","Funky","Rank","Noxious","Toxic","Biohazard","Plagueborn","Extinction"];
+      const soundAdjectives = ["Silent","Whispering","Murmuring","Rattling","Blatant","Thunderous","Explosive","Siren-Loud","Siege-Loud","Doom-Loud"];
+
+      // One readable phrase, with all three digits encoded into the wording.
+      // This keeps all 999 non-zero classifications unique without slash-separated labels.
+      const name = `${severityRanks[severity]} ${smellAdjectives[smell]} ${soundAdjectives[sound]} ${amountNouns[a]}`;
 
       const max = Math.max(a, smell, sound);
       const winners = [];
