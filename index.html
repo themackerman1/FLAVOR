@@ -335,6 +335,35 @@
         name = `A ${headlineAmount[a]} ${headlineSound[sound]} ${headlineSmell[smell]} ${headlineNouns[nounIndex]}`;
       }
 
+      let punchline;
+      if (a === 9 && smell === 1 && sound === 9) {
+        punchline = "An empty threat with excellent speakers.";
+      } else if (smell >= 8 && sound <= 2) {
+        punchline = "Nobody heard the crime, which is unfortunate because everybody can smell the evidence.";
+      } else if (sound >= 8 && smell <= 2) {
+        punchline = "The performance is doing far more damage than the aroma.";
+      } else if (a >= 8 && smell <= 2 && sound <= 2) {
+        punchline = "An impressive quantity of almost nothing anyone cares about.";
+      } else if (a <= 2 && smell >= 8) {
+        punchline = "Very little happened, yet your nose somehow got the worst ending.";
+      } else if (a <= 2 && sound >= 8) {
+        punchline = "Tiny payload. Stadium production values.";
+      } else if (a >= 8 && smell >= 8 && sound >= 8) {
+        punchline = "There are no winners here, only witnesses.";
+      } else if (smell > a && smell > sound) {
+        punchline = "The nose is carrying this entire disaster.";
+      } else if (sound > a && sound > smell) {
+        punchline = "Subtlety was never invited.";
+      } else if (a > smell && a > sound) {
+        punchline = "Quantity has mistaken itself for quality.";
+      } else if (severity <= 2) {
+        punchline = "Civilization is expected to recover.";
+      } else if (severity <= 5) {
+        punchline = "Not historic, but definitely worth an accusation.";
+      } else {
+        punchline = "The atmosphere would like to speak to a manager.";
+      }
+
       const description =
         `Score ${code}. ${amountPhrase[a]}, ${smellPhrase[smell]}, and ${soundPhrase[sound]}. ${punchline}`;
 
