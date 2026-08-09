@@ -514,11 +514,11 @@
         ][sound];
 
         const closer =
-          smell >= 8 ? pick(stinkJokes, code, 17) :
-          sound >= 8 ? pick(loudJokes, code, 18) :
-          a >= 8 ? pick(bigJokes, code, 19) :
-          severity <= 2 ? pick(tinyJokes, code, 20) :
-          pick(openings, code, 21);
+          smell >= 8 ? pickHeadline(stinkHeadlines, code, 17) :
+          sound >= 8 ? pickHeadline(loudHeadlines, code, 18) :
+          a >= 8 ? pickHeadline(bigHeadlines, code, 19) :
+          severity <= 2 ? pickHeadline(tinyHeadlines, code, 20) :
+          pickHeadline(simpleHeadlines, code, 21);
 
         description = `${amountLine}, ${smellLine}, and ${soundLine}. ${closer}.`;
       }
