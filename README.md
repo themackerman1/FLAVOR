@@ -1,4 +1,4 @@
-# A.S.S. — Atmospheric Severity System
+# ASS — Atmospheric Severity System
 
 Three 0–9 inputs:
 
