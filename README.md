@@ -1,13 +1,11 @@
-# ASS — 1,000 Literal Results
+# ASS — Authored Headline Pass
 
-This build no longer generates result copy from adjective/template logic at runtime.
+The headline library has been rewritten toward short, idiomatic, sardonic punchlines inspired by the supplied examples.
 
-It contains a literal library of all 1,000 scores:
-- 1,000 unique headlines
-- 1,000 unique descriptions
-- every headline is five words or fewer
-- 919 remains "A big loud nothing"
-- 989 remains "MATT-ASS-TROPHE"
-- 989 description remains "Matt came. He farted. He conquered."
-
-The score controls only look up the finished copy for the selected three-digit code.
+Rules:
+- all 1,000 headlines remain unique
+- five words maximum
+- severity influences tone
+- 919 remains “A big loud nothing”
+- 989 remains “MATT-ASS-TROPHE”
+- 989 description remains “Matt came. He farted. He conquered.”
