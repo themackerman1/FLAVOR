@@ -1,14 +1,20 @@
 # ASS — Atmospheric Severity System
 
-Classification cleanup build.
+Corrected unique-description build.
 
-The classification titles now use plain English only:
-- no hyphenated stat words
-- no slash separated labels
-- no backslashes
-- no RPG style compound descriptors
+There are exactly 1,000 possible scores from 000 through 999.
 
-919 is exactly:
+Every score now gets a genuinely distinct description that:
+- states its exact three digit score
+- describes Amount
+- describes Smell
+- describes Sound
+- adds a sardonic punchline based on the dominant trait or score pattern
+
+The short classification headline remains punchy and may intentionally repeat across related scores.
+The descriptive result itself is unique for all 1,000 scores.
+
+919 remains:
 A big loud nothing
 
-The app still uses Amount, Smell, and Sound independently to choose the joke and supporting description.
+Its description specifically identifies a maximum amount, almost no smell, and maximum sound.

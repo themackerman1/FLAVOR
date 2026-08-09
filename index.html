@@ -259,11 +259,13 @@
     let musicStep = 0;
 
     function classificationFor(a, smell, sound) {
+      const code = `${a}${smell}${sound}`;
+
       if (a === 0 && smell === 0 && sound === 0) {
         return {
           emoji: "😇",
           name: "Nothing happened",
-          description: "Against all odds, the air remains innocent."
+          description: "Score 000. Against all odds, the air remains innocent."
         };
       }
 
@@ -279,48 +281,48 @@
       else if (severity >= 3) emoji = "😏";
       else if (severity <= 1) emoji = "🤏";
 
-      const amount = [
-        "barely any",
-        "a tiny",
-        "a little",
-        "a small",
-        "a modest",
-        "a decent",
-        "a big",
-        "a huge",
-        "a massive",
-        "an enormous"
+      const amountPhrase = [
+        "almost no gas",
+        "a tiny puff",
+        "a little puff",
+        "a small cloud",
+        "a modest cloud",
+        "a decent cloud",
+        "a big cloud",
+        "a huge cloud",
+        "a massive cloud",
+        "an enormous cloud"
       ];
 
-      const noise = [
-        "silent",
-        "hushed",
-        "quiet",
-        "audible",
-        "obvious",
-        "loud",
-        "booming",
-        "thunderous",
-        "deafening",
-        "apocalyptic"
+      const smellPhrase = [
+        "no smell at all",
+        "almost no smell",
+        "a faint whiff",
+        "a noticeable funk",
+        "a proper stink",
+        "a serious reek",
+        "a nasty stench",
+        "a hazardous odor",
+        "a nightmare smell",
+        "an unforgivable stench"
       ];
 
-      const odor = [
-        "nothing",
-        "whiff",
-        "hint",
-        "funk",
-        "stink",
-        "reek",
-        "stench",
-        "hazard",
-        "nightmare",
-        "crime scene"
+      const soundPhrase = [
+        "total silence",
+        "barely a sound",
+        "a quiet little noise",
+        "an audible report",
+        "an obvious announcement",
+        "a loud report",
+        "a booming report",
+        "a thunderous report",
+        "a deafening announcement",
+        "an apocalyptic noise"
       ];
 
+      // Short headline. It does not need to be unique by itself;
+      // the description below is guaranteed unique for every score.
       let name;
-
-      // Strong pattern jokes first.
       if (a === 9 && smell === 1 && sound === 9) {
         name = "A big loud nothing";
       } else if (a >= 8 && smell <= 1 && sound >= 8) {
@@ -340,55 +342,54 @@
       } else if (smell >= 8 && sound <= 2) {
         name = "Silent but deeply disrespectful";
       } else if (sound >= 8 && smell <= 2) {
-        name = "Loud enough to scare you, clean enough to confuse you";
-      } else if (a >= 8 && smell <= 2) {
-        name = "A whole lot of fart with nowhere to smell";
-      } else if (a <= 2 && sound >= 8) {
-        name = "A tiny fart with stadium speakers";
-      } else if (a <= 2 && smell >= 8) {
-        name = "Almost nothing, somehow still disgusting";
-      } else if (smell >= 8 && sound >= 8) {
-        name = "It smells terrible and brought a microphone";
-      } else if (a >= 8 && sound >= 8) {
-        name = "Big, loud, and proud of itself";
+        name = "Mostly noise, mercifully";
       } else if (a >= 8 && smell >= 8) {
         name = "Big stink, bigger mistake";
-      } else if (smell >= 7 && sound <= 3) {
-        name = "Quiet enough to deny, bad enough to remember";
-      } else if (sound >= 7 && smell <= 3) {
-        name = "Mostly noise, mercifully";
-      } else if (a >= 7 && smell <= 3 && sound <= 3) {
-        name = "A lot happened and somehow none of it mattered";
-      } else if (a <= 3 && smell <= 3 && sound <= 3) {
+      } else if (severity <= 2) {
         name = "Barely worth blaming on the dog";
-      } else if (smell >= 6 && smell > a && smell > sound) {
-        name = "Your nose is doing all the suffering";
-      } else if (sound >= 6 && sound > a && sound > smell) {
-        name = "More announcement than achievement";
-      } else if (a >= 6 && a > smell && a > sound) {
-        name = "A heroic amount of absolutely nothing useful";
+      } else if (severity <= 4) {
+        name = "The room noticed";
+      } else if (severity <= 6) {
+        name = "A regrettable life choice";
+      } else if (severity <= 7) {
+        name = "The atmosphere objects";
       } else {
-        // Simple fallback sentence. No slashes, no hyphens, no stacked stat labels.
-        name = `${amount[a]} ${noise[sound]} ${odor[smell]}`;
-        name = name.charAt(0).toUpperCase() + name.slice(1);
+        name = "Everybody should leave";
       }
 
-      let description;
+      // Every one of the 1,000 descriptions is unique because it states the
+      // exact three digit score and then interprets each digit naturally.
+      let punchline;
       if (a === 9 && smell === 1 && sound === 9) {
-        description = "Huge payload. Huge noise. Almost no smell. An empty threat with excellent speakers.";
-      } else if (smell >= a && smell >= sound && smell >= 6) {
-        description = "The smell is doing the heavy lifting. Your nose did not volunteer for this.";
-      } else if (sound >= a && sound >= smell && sound >= 6) {
-        description = "The sound is the headline. Subtlety left before anyone could ask questions.";
-      } else if (a >= smell && a >= sound && a >= 6) {
-        description = "Quantity is carrying the performance. Impressive effort. Questionable purpose.";
+        punchline = "An empty threat with excellent speakers.";
+      } else if (smell >= 8 && sound <= 2) {
+        punchline = "Nobody heard the crime, which is unfortunate because everybody can smell the evidence.";
+      } else if (sound >= 8 && smell <= 2) {
+        punchline = "The performance is doing far more damage than the aroma.";
+      } else if (a >= 8 && smell <= 2 && sound <= 2) {
+        punchline = "An impressive quantity of almost nothing anyone cares about.";
+      } else if (a <= 2 && smell >= 8) {
+        punchline = "Very little happened, yet your nose somehow got the worst ending.";
+      } else if (a <= 2 && sound >= 8) {
+        punchline = "Tiny payload. Stadium production values.";
+      } else if (a >= 8 && smell >= 8 && sound >= 8) {
+        punchline = "There are no winners here, only witnesses.";
+      } else if (smell > a && smell > sound) {
+        punchline = "The nose is carrying this entire disaster.";
+      } else if (sound > a && sound > smell) {
+        punchline = "Subtlety was never invited.";
+      } else if (a > smell && a > sound) {
+        punchline = "Quantity has mistaken itself for quality.";
       } else if (severity <= 2) {
-        description = "More inconvenience than incident. Civilization should recover.";
+        punchline = "Civilization is expected to recover.";
       } else if (severity <= 5) {
-        description = "The room noticed. Nobody is proud of that fact.";
+        punchline = "Not historic, but definitely worth an accusation.";
       } else {
-        description = "The atmosphere would like to speak to a manager.";
+        punchline = "The atmosphere would like to speak to a manager.";
       }
+
+      const description =
+        `Score ${code}. ${amountPhrase[a]}, ${smellPhrase[smell]}, and ${soundPhrase[sound]}. ${punchline}`;
 
       return { emoji, name, description };
     }
