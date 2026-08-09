@@ -1,37 +1,26 @@
-# FLAVOR
+# A.S.S. — Atmospheric Severity System
 
-A single-page GitHub Pages app.
+Three 0–9 inputs:
 
-## Files
+- A — Amount
+- S — Smell
+- S — Sound
 
-- `index.html` — complete app
-- `icon.svg` — browser favicon and visible app tile
-- `icon-192.png` / `icon-512.png` — installable app icons
-- `apple-touch-icon.png` — iPhone/iPad home-screen icon
-- `manifest.webmanifest` — installable web-app metadata
+## 999 descriptive results
 
-## GitHub Pages
+Every non-zero three-digit score from 001 through 999 has a unique, deterministic classification.
+000 remains the special no-incident state.
 
-Upload every file in this folder to the root of your GitHub repository, then enable GitHub Pages from the `main` branch and `/ (root)` folder.
+The classifier is trait-aware rather than treating the score as a simple total:
+- Amount changes the scale/payload language.
+- Smell changes odor language.
+- Sound changes acoustic language.
+- Overall danger rises with the three values, with smell and amount weighted slightly more heavily.
+- The dominant category changes the emphasis of the description.
 
-## Latest changes
+Example:
+919 = Amount 9, Smell 1, Sound 9 → huge and extremely loud, but only faintly smelly.
 
-- Removed the Total Damage summary card.
-- Share output now includes only the six-digit code and emoji/classification.
-- Music button labels are START MUSIC / STOP MUSIC.
-- Browser page title is FLAVOR.
-
-- Replaced numbered score buttons with glowing pixel equalizer blocks.
-- Added subtle block pulse, stronger CRT scanlines/bloom, and animated gas crime code digits.
-
-
-Latest tweak: reduced selected block pulse by approximately 50% for a subtler CRT arcade effect.
-
-## 256-classification system
-
-The final classification is now derived deterministically from the complete six-digit FLAVOR code rather than only the summed score.
-
-- 256 unique classification names
-- 256 unique descriptions
-- Stable result: the same six-digit code always produces the same classification
-- Shared output remains only the score code and emoji/classification
+Shared output remains only:
+three-digit code
+emoji + classification

@@ -511,89 +511,110 @@
       ["R","Recipients","How many innocent bystanders lost faith in humanity?"]
     ];
 
-
-    const classificationPrefixes = [
-      "Administrative","Spectral","Suspicious","Invisible",
-      "Featherweight","Silent","Budget","Stealth",
-      "Minor","Cursed","Dungeon","Unlicensed",
-      "Tactical","Toxic","Orbital","Extinction"
+    // 999 score-aware classifications: every non-zero A.S.S. code (001–999)
+    // gets its own deterministic title/description based on Amount, Smell, and Sound.
+    const amountBands = [
+      ["Trace","a trace-sized release"],
+      ["Tiny","a tiny release"],
+      ["Small","a small but definite release"],
+      ["Moderate","a moderate atmospheric payload"],
+      ["Heavy","a heavy release"],
+      ["Massive","a massive atmospheric payload"],
+      ["Severe","a severe volume event"],
+      ["Extreme","an extreme volume event"],
+      ["Catastrophic","a room-dominating payload"],
+      ["Apocalyptic","a maximum-output atmospheric event"]
     ];
 
-    const classificationSuffixes = [
-      "Error","Protocol","Draft","Accomplice",
-      "Felony","Side Quest","Balloon","Tutorial",
-      "Incident","Trap","Ambush","Experiment",
-      "Debuff","Hazard","Catastrophe","Final Boss"
+    const smellBands = [
+      ["Clean","with essentially no odor"],
+      ["Faint","with only a faint smell"],
+      ["Noticeable","with a clearly noticeable smell"],
+      ["Funky","with an increasingly questionable odor"],
+      ["Rank","with a rank odor"],
+      ["Noxious","with a noxious smell"],
+      ["Toxic","with an aggressively toxic stink"],
+      ["Biohazard","with a biohazard-grade odor"],
+      ["Plague","with a room-clearing plague cloud"],
+      ["Extinction","with an extinction-tier stench"]
     ];
 
-    const classificationEmojis = [
-      "😇","🫧","🌬️","🕵️","🪶","🤫","🎈","🥷",
-      "📎","🪤","🧦","🧪","🛡️","⚠️","💀","💥",
-      "🧙","🦨","🧟","🧯","🏃","🧌","🔔","💢",
-      "🚧","🧨","😵","🦂","☠️","☣️","🚨","🌋"
+    const soundBands = [
+      ["Silent","and virtually no sound"],
+      ["Whisper","and only a whisper of noise"],
+      ["Murmur","and an audible little murmur"],
+      ["Rattle","and a suspicious rattle"],
+      ["Blatant","and an unmistakable report"],
+      ["Thunder","and a thunderous announcement"],
+      ["Detonation","and a concussive blast"],
+      ["Air-Raid","and an alarmingly violent report"],
+      ["Siege","and a room-commanding sonic event"],
+      ["Doom","and a maximum-volume apocalypse"]
     ];
 
-    const descriptionOpeners = [
-      "The room detected",
-      "Witnesses reported",
-      "The ventilation system logged",
-      "A nearby houseplant survived",
-      "The atmosphere reluctantly accepted",
-      "The dungeon announcer confirmed",
-      "Human resources documented",
-      "The emergency candle discovered",
-      "A suspicious pet was blamed for",
-      "Local scientists abandoned",
-      "The building unlocked",
-      "Several innocent bystanders endured",
-      "The air-quality monitor resigned over",
-      "Civilization briefly experienced",
-      "Future historians will misinterpret",
-      "Satellite instruments detected"
+    const severityRanks = [
+      "Harmless","Trivial","Mild","Notable","Questionable",
+      "Hazardous","Severe","Critical","Catastrophic","Apocalyptic"
     ];
 
-    const descriptionClosers = [
-      "an incident too small for glory but large enough for paperwork.",
-      "a stealth event with excellent timing and terrible ethics.",
-      "a pressure release that immediately damaged group morale.",
-      "a biological side quest nobody remembered accepting.",
-      "an atmospheric betrayal with suspiciously professional execution.",
-      "an odor event now classified as environmental storytelling.",
-      "a social debuff that may persist through the next conversation.",
-      "a compact disaster with deluxe consequences.",
-      "a room-wide effect that made the nearest exit look heroic.",
-      "a cursed breeze carrying absolutely no loot.",
-      "an invisible boss mechanic with an unfair damage radius.",
-      "a ventilation request disguised as a personality test.",
-      "a gas crime whose only witness is reconsidering friendship.",
-      "a tactical emission that turned oxygen into a limited resource.",
-      "a legendary incident already being blamed on the architecture.",
-      "a final-form atmosphere event that refuses to apologize."
-    ];
+    function dominantTrait(a, smell, sound) {
+      const max = Math.max(a, smell, sound);
+      const winners = [];
+      if (a === max) winners.push("amount");
+      if (smell === max) winners.push("smell");
+      if (sound === max) winners.push("sound");
+      return winners.length === 1 ? winners[0] : "mixed";
+    }
 
-    const classifications = Array.from({ length: 256 }, (_, index) => {
-      const high = Math.floor(index / 16);
-      const low = index % 16;
+    function classificationFor(a, smell, sound) {
+      // 000 is a special no-incident state. The other 999 codes are unique.
+      if (a === 0 && smell === 0 && sound === 0) {
+        return {
+          emoji: "😇",
+          name: "Administrative Error",
+          description: "No measurable incident. The atmosphere has nothing useful to report."
+        };
+      }
 
-      return {
-        emoji: classificationEmojis[(high * 7 + low * 3) % classificationEmojis.length],
-        name: `${classificationPrefixes[high]} ${classificationSuffixes[low]}`,
-        description: `${descriptionOpeners[high]} ${descriptionClosers[low]}`
-      };
-    });
+      const weighted = a * 1.15 + smell * 1.25 + sound * 1.0;
+      const peak = Math.max(a, smell, sound);
+      const severity = Math.min(9, Math.floor((weighted / 30.6) * 8 + peak / 9));
+      const dominant = dominantTrait(a, smell, sound);
 
-    function classificationIndex(inputValues) {
-      let hash = 0;
+      let emoji = "🌬️";
+      if (severity >= 8) emoji = "💀";
+      else if (severity >= 7) emoji = "☣️";
+      else if (severity >= 6) emoji = "⚠️";
+      else if (severity >= 5) emoji = "😵";
+      else if (severity >= 4) emoji = "🥴";
+      else if (severity >= 3) emoji = "🫣";
+      else if (severity >= 2) emoji = "🫧";
 
-      inputValues.forEach((value, index) => {
-        hash = (hash * 37 + value * (index + 11)) & 255;
-      });
+      // The title contains all three trait bands, so all 999 non-zero codes
+      // produce a distinct classification while remaining semantically legible.
+      const name =
+        `${severityRanks[severity]} ${amountBands[a][0]} / ${smellBands[smell][0]} / ${soundBands[sound][0]}`;
 
-      return hash;
+      let lead;
+      if (dominant === "amount") {
+        lead = `The main problem is volume: ${amountBands[a][1]}`;
+      } else if (dominant === "smell") {
+        lead = `The nose takes the critical hit: ${smellBands[smell][1]}`;
+      } else if (dominant === "sound") {
+        lead = `Subtlety has been killed by audio: ${soundBands[sound][1]}`;
+      } else {
+        lead = `This is a balanced multi-system incident: ${amountBands[a][1]}`;
+      }
+
+      const description =
+        `${lead}, ${smellBands[smell][1]}, ${soundBands[sound][1]}. ` +
+        `Threat assessment: ${severityRanks[severity].toLowerCase()}.`;
+
+      return { emoji, name, description };
     }
 
     function currentClassification() {
-      return classifications[classificationIndex(values)];
+      return classificationFor(values[0], values[1], values[2]);
     }
 
     const palettes = [
