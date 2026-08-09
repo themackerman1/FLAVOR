@@ -382,6 +382,9 @@
 
       const track = document.createElement("div");
       track.className = "meter-track";
+      track.dataset.index = String(index);
+      track.setAttribute("role","group");
+      track.setAttribute("aria-label", `${item[1]} score`);
 
       for (let score=0; score<10; score++) {
         const button = document.createElement("button");
@@ -389,11 +392,13 @@
         button.className = "pixel-block";
         button.dataset.score = String(score);
         button.setAttribute("aria-label", `${item[1]} ${score} out of 9`);
+
         button.addEventListener("click", ()=>{
           values[index] = score;
           blip(score);
           update();
         });
+
         track.appendChild(button);
       }
 
@@ -407,8 +412,9 @@
     });
 
     function animateCode(code) {
-      document.querySelectorAll("#code span").forEach((span,index)=>{
-        const next = code[index];
+      const spans = document.querySelectorAll("#code span");
+      spans.forEach((span,index)=>{
+        const next = code[index] ?? "0";
         if (span.textContent !== next) {
           span.textContent = next;
           span.classList.remove("roll");
@@ -419,9 +425,12 @@
     }
 
     function update() {
-      document.querySelectorAll(".meter-track").forEach((track,index)=>{
-        const value = values[index];
+      const tracks = document.querySelectorAll(".meter-track");
+
+      tracks.forEach((track,index)=>{
+        const value = values[index] ?? 0;
         const palette = palettes[index];
+
         track.style.setProperty("--meter-gradient", `linear-gradient(135deg,${palette[0]},${palette[1]} 52%,${palette[2]})`);
         track.style.setProperty("--meter-glow", palette[3]);
 
@@ -429,18 +438,28 @@
           const score = Number(block.dataset.score);
           block.classList.toggle("active", score <= value && value > 0);
           block.classList.toggle("selected", score === value);
+          block.setAttribute("aria-pressed", score === value ? "true" : "false");
           block.style.opacity = score <= value && value > 0 ? String(.5 + score * .055) : "1";
         });
 
-        document.getElementById(`meter-value-${index}`).textContent = String(value);
+        const valueEl = document.getElementById(`meter-value-${index}`);
+        if (valueEl) valueEl.textContent = String(value);
       });
 
       const c = currentClassification();
-      animateCode(values.join(""));
-      document.getElementById("classification").textContent = `${c.emoji} ${c.name}`;
-      document.getElementById("verdict-name").textContent = `${c.emoji} ${c.name}`;
-      document.getElementById("description").textContent = c.description;
-      document.getElementById("summary").textContent = `A ${values[0]} · S ${values[1]} · S ${values[2]}`;
+      const code = values.join("");
+
+      animateCode(code);
+
+      const classificationEl = document.getElementById("classification");
+      const verdictNameEl = document.getElementById("verdict-name");
+      const descriptionEl = document.getElementById("description");
+      const summaryEl = document.getElementById("summary");
+
+      if (classificationEl) classificationEl.textContent = `${c.emoji} ${c.name}`;
+      if (verdictNameEl) verdictNameEl.textContent = `${c.emoji} ${c.name}`;
+      if (descriptionEl) descriptionEl.textContent = c.description;
+      if (summaryEl) summaryEl.textContent = `A ${values[0]} · S ${values[1]} · S ${values[2]}`;
     }
 
     function getShareText() {

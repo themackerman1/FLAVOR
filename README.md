@@ -1,3 +1,10 @@
-# ASS
+# ASS — Slider Fix Build
 
-Validated: 1,000 scores, 1,000 unique headlines, and 1,000 unique descriptions. 919 is exactly “A big loud nothing.”
+This build fixes the regression where clicking a score block did not update the three-digit ASS code or classification.
+
+Verified wiring:
+- Amount updates digit 1
+- Smell updates digit 2
+- Sound updates digit 3
+- Classification and summary refresh on every click
+- Score block selection state refreshes correctly
