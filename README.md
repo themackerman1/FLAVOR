@@ -1,19 +1,13 @@
-# ASS — Short Headline Build
+# ASS — 1,000 Literal Results
 
-Headline direction:
-- five words maximum
-- aim for two to four words
-- simpler sardonic phrases
-- fewer generated adjective chains
+This build no longer generates result copy from adjective/template logic at runtime.
 
-Reference tone now includes:
-- An unapologetic delivery
-- A putrescent wind
-- You should be ashamed
-- Duck and cover
-- Hide your kids
+It contains a literal library of all 1,000 scores:
+- 1,000 unique headlines
+- 1,000 unique descriptions
+- every headline is five words or fewer
+- 919 remains "A big loud nothing"
+- 989 remains "MATT-ASS-TROPHE"
+- 989 description remains "Matt came. He farted. He conquered."
 
-Two exact special results are preserved:
-- 919 — A big loud nothing
-- 989 — MATT-ASS-TROPHE
-  Matt came. He farted. He conquered.
+The score controls only look up the finished copy for the selected three-digit code.
