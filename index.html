@@ -258,6 +258,11 @@
     let nextNoteTime = 0;
     let musicStep = 0;
 
+    const headlineAmount = ["barely there","tiny","little","small","modest","decent","big","huge","massive","enormous"];
+    const headlineSmell = ["innocent","faint","suspicious","funky","stinky","rank","nasty","toxic","nightmarish","unforgivable"];
+    const headlineSound = ["silent","hushed","quiet","audible","obvious","loud","booming","thunderous","deafening","apocalyptic"];
+    const headlineNouns = ["nothing","whisper","incident","mistake","problem","event","offense","disaster","atrocity","apocalypse"];
+
     function classificationFor(a, smell, sound) {
       const code = `${a}${smell}${sound}`;
 
@@ -325,67 +330,9 @@
       let name;
       if (a === 9 && smell === 1 && sound === 9) {
         name = "A big loud nothing";
-      } else if (a >= 8 && smell <= 1 && sound >= 8) {
-        name = "A huge noise about nothing";
-      } else if (a >= 8 && smell >= 8 && sound <= 1) {
-        name = "Huge, silent, and completely unforgivable";
-      } else if (a <= 1 && smell >= 8 && sound >= 8) {
-        name = "Tiny fart, enormous hostility";
-      } else if (a >= 8 && smell <= 1 && sound <= 1) {
-        name = "Massive effort, absolutely no payoff";
-      } else if (a <= 1 && smell <= 1 && sound >= 8) {
-        name = "All bark and no stink";
-      } else if (a <= 1 && smell >= 8 && sound <= 1) {
-        name = "Small package, terrible contents";
-      } else if (a >= 8 && smell >= 8 && sound >= 8) {
-        name = "Everybody loses";
-      } else if (smell >= 8 && sound <= 2) {
-        name = "Silent but deeply disrespectful";
-      } else if (sound >= 8 && smell <= 2) {
-        name = "Mostly noise, mercifully";
-      } else if (a >= 8 && smell >= 8) {
-        name = "Big stink, bigger mistake";
-      } else if (severity <= 2) {
-        name = "Barely worth blaming on the dog";
-      } else if (severity <= 4) {
-        name = "The room noticed";
-      } else if (severity <= 6) {
-        name = "A regrettable life choice";
-      } else if (severity <= 7) {
-        name = "The atmosphere objects";
       } else {
-        name = "Everybody should leave";
-      }
-
-      // Every one of the 1,000 descriptions is unique because it states the
-      // exact three digit score and then interprets each digit naturally.
-      let punchline;
-      if (a === 9 && smell === 1 && sound === 9) {
-        punchline = "An empty threat with excellent speakers.";
-      } else if (smell >= 8 && sound <= 2) {
-        punchline = "Nobody heard the crime, which is unfortunate because everybody can smell the evidence.";
-      } else if (sound >= 8 && smell <= 2) {
-        punchline = "The performance is doing far more damage than the aroma.";
-      } else if (a >= 8 && smell <= 2 && sound <= 2) {
-        punchline = "An impressive quantity of almost nothing anyone cares about.";
-      } else if (a <= 2 && smell >= 8) {
-        punchline = "Very little happened, yet your nose somehow got the worst ending.";
-      } else if (a <= 2 && sound >= 8) {
-        punchline = "Tiny payload. Stadium production values.";
-      } else if (a >= 8 && smell >= 8 && sound >= 8) {
-        punchline = "There are no winners here, only witnesses.";
-      } else if (smell > a && smell > sound) {
-        punchline = "The nose is carrying this entire disaster.";
-      } else if (sound > a && sound > smell) {
-        punchline = "Subtlety was never invited.";
-      } else if (a > smell && a > sound) {
-        punchline = "Quantity has mistaken itself for quality.";
-      } else if (severity <= 2) {
-        punchline = "Civilization is expected to recover.";
-      } else if (severity <= 5) {
-        punchline = "Not historic, but definitely worth an accusation.";
-      } else {
-        punchline = "The atmosphere would like to speak to a manager.";
+        const nounIndex = Math.max(a, smell, sound);
+        name = `A ${headlineAmount[a]} ${headlineSound[sound]} ${headlineSmell[smell]} ${headlineNouns[nounIndex]}`;
       }
 
       const description =
