@@ -1,11 +1,12 @@
-# ASS — Runtime Fix
+# ASS — Varied Headline Build
 
-The stuck-at-000 bug was caused by a JavaScript ReferenceError:
-`punchline` was referenced after the variable had been removed.
+Headline writing has been redesigned around multiple joke families and sentence structures instead of adjective substitution.
 
-This build restores the variable and runtime-tests nonzero classifications before packaging.
+It includes:
+- hand authored anchor jokes for memorable scores
+- separate joke families for loud, quiet, smelly, clean, huge, and tiny score shapes
+- varied grammar and sentence structures
+- trait aware descriptions
+- 919 remains exactly "A big loud nothing"
 
-Tested codes:
-000, 100, 010, 001, 555, 919, 999.
-
-Clicking Amount, Smell, or Sound now updates the three-digit code before rendering the result.
+The separate Final Classification card remains removed.

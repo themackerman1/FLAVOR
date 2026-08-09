@@ -111,7 +111,7 @@
       text-align:center;text-shadow:0 0 10px rgba(132,245,66,.75)
     }
 
-    .score-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:24px}
+    .score-grid{display:grid;grid-template-columns:1fr;gap:12px;margin-top:24px}
     .panel,.verdict,.share{
       border:1px solid var(--border);background:var(--panel);
       box-shadow:inset 0 0 18px rgba(76,29,149,.18),0 0 18px rgba(132,245,66,.07)
@@ -173,16 +173,11 @@
           <div class="panel-label">ASS CODE</div>
           <div id="code" class="score-code" aria-live="polite"><span>0</span><span>0</span><span>0</span></div>
         </div>
-        <div class="panel">
-          <div class="panel-label">FINAL CLASSIFICATION</div>
-          <div id="classification" class="classification">😇 Administrative Error</div>
-        </div>
       </section>
 
-      <section class="verdict" aria-live="polite">
+      <section class="verdict" aria-live="polite" aria-label="ASS result">
         <div id="verdict-name" class="verdict-name">😇 Administrative Error</div>
         <p id="description" class="verdict-copy">No measurable incident. The atmosphere has nothing useful to report.</p>
-        <p id="summary" class="summary">A 0 · S 0 · S 0</p>
       </section>
 
       <section class="share">
@@ -258,19 +253,133 @@
     let nextNoteTime = 0;
     let musicStep = 0;
 
-    const headlineAmount = ["barely there","tiny","little","small","modest","decent","big","huge","massive","enormous"];
-    const headlineSmell = ["innocent","faint","suspicious","funky","stinky","rank","nasty","toxic","nightmarish","unforgivable"];
-    const headlineSound = ["silent","hushed","quiet","audible","obvious","loud","booming","thunderous","deafening","apocalyptic"];
-    const headlineNouns = ["nothing","whisper","incident","mistake","problem","event","offense","disaster","atrocity","apocalypse"];
+    const amountTone = [
+      "barely registered","tiny","small","modest","respectable",
+      "substantial","big","huge","massive","absurdly large"
+    ];
+    const smellTone = [
+      "odorless","nearly innocent","faintly suspicious","noticeably funky","properly stinky",
+      "seriously rank","nose hostile","chemically rude","room clearing","morally indefensible"
+    ];
+    const soundTone = [
+      "silent","almost silent","quiet","audible","obvious",
+      "loud","booming","thunderous","deafening","cataclysmic"
+    ];
+
+    const openings = [
+      "Nobody needed this",
+      "A bold use of oxygen",
+      "The room has questions",
+      "Nature made a clerical error",
+      "An avoidable little chapter",
+      "The furniture will remember",
+      "Somewhere, a window opened itself",
+      "The dog has retained counsel",
+      "Your alibi needs work",
+      "The atmosphere has filed paperwork",
+      "A deeply unserious emergency",
+      "Proof that confidence is not competence",
+      "The air deserved better",
+      "A personal attack on indoor spaces",
+      "An argument for better ventilation",
+      "This meeting could have been an email",
+      "A regrettable contribution to science",
+      "The room is now part of the investigation",
+      "An unsolicited atmospheric update",
+      "A terrible way to become memorable"
+    ];
+
+    const quietJokes = [
+      "Stealth mode was unfortunately successful",
+      "Nobody heard it, which makes the evidence worse",
+      "A whisper with criminal intent",
+      "Quietly making enemies",
+      "The silent treatment has consequences",
+      "Subtle delivery, unsubtle aftermath",
+      "An invisible memo from your intestines",
+      "No announcement, just consequences",
+      "A covert operation with terrible funding",
+      "The room found out the hard way"
+    ];
+
+    const loudJokes = [
+      "The fart has a sound system",
+      "Subtlety was not in the budget",
+      "An entrance nobody requested",
+      "Apparently this needed surround sound",
+      "The acoustics are now accomplices",
+      "A standing ovation from one butt",
+      "The room heard the warning too late",
+      "All announcement, questionable achievement",
+      "A noise complaint with a backstory",
+      "Your dignity just hit maximum volume"
+    ];
+
+    const stinkJokes = [
+      "Your nose has entered the boss fight",
+      "The smell arrived with legal representation",
+      "A scent with hostile intentions",
+      "The air is reconsidering its career",
+      "Someone weaponized the concept of indoors",
+      "The room now has a villain origin story",
+      "Your nostrils have requested hazard pay",
+      "The evidence is aggressively airborne",
+      "A smell with absolutely no respect for boundaries",
+      "Ventilation has become a survival mechanic"
+    ];
+
+    const cleanJokes = [
+      "All spectacle, no evidence",
+      "A suspicious amount of nothing",
+      "Big performance, clean getaway",
+      "The nose has been mercifully excluded",
+      "A victimless crime, chemically speaking",
+      "Nothing to smell here, officer",
+      "An empty threat with production values",
+      "The air remains weirdly innocent",
+      "A lot of confidence for no aroma",
+      "The nose gets the day off"
+    ];
+
+    const bigJokes = [
+      "Quantity has mistaken itself for talent",
+      "An industrial amount of poor judgment",
+      "The payload has its own zip code",
+      "A heroic quantity of absolutely nobody asked",
+      "This could have been several smaller mistakes",
+      "The volume knob was apparently structural",
+      "An unreasonable amount of atmosphere changed teams",
+      "Go big or go outside",
+      "The sheer commitment is upsetting",
+      "A bulk shipment of consequences"
+    ];
+
+    const tinyJokes = [
+      "A technicality with ambitions",
+      "Travel size disappointment",
+      "Barely enough fart to form an opinion",
+      "A rounding error with confidence",
+      "Small fart, full benefits package",
+      "The appetizer nobody ordered",
+      "A sample size of bad judgment",
+      "More concept than fart",
+      "Tiny footprint, unnecessary legacy",
+      "An extremely local incident"
+    ];
+
+    function pick(list, code, salt) {
+      return list[(code * (salt * 2 + 1) + salt * 17) % list.length];
+    }
 
     function classificationFor(a, smell, sound) {
-      const code = `${a}${smell}${sound}`;
+      const codeText = `${a}${smell}${sound}`;
+      const code = a * 100 + smell * 10 + sound;
 
-      if (a === 0 && smell === 0 && sound === 0) {
+      if (code === 0) {
         return {
           emoji: "😇",
           name: "Nothing happened",
-          description: "Score 000. Against all odds, the air remains innocent."
+          description: "Against all odds, the air remains innocent."
         };
       }
 
@@ -286,86 +395,143 @@
       else if (severity >= 3) emoji = "😏";
       else if (severity <= 1) emoji = "🤏";
 
-      const amountPhrase = [
-        "almost no gas",
-        "a tiny puff",
-        "a little puff",
-        "a small cloud",
-        "a modest cloud",
-        "a decent cloud",
-        "a big cloud",
-        "a huge cloud",
-        "a massive cloud",
-        "an enormous cloud"
-      ];
-
-      const smellPhrase = [
-        "no smell at all",
-        "almost no smell",
-        "a faint whiff",
-        "a noticeable funk",
-        "a proper stink",
-        "a serious reek",
-        "a nasty stench",
-        "a hazardous odor",
-        "a nightmare smell",
-        "an unforgivable stench"
-      ];
-
-      const soundPhrase = [
-        "total silence",
-        "barely a sound",
-        "a quiet little noise",
-        "an audible report",
-        "an obvious announcement",
-        "a loud report",
-        "a booming report",
-        "a thunderous report",
-        "a deafening announcement",
-        "an apocalyptic noise"
-      ];
-
-      // Short headline. It does not need to be unique by itself;
-      // the description below is guaranteed unique for every score.
       let name;
-      if (a === 9 && smell === 1 && sound === 9) {
-        name = "A big loud nothing";
+
+      // Hand authored anchors and extreme combinations.
+      const anchors = {
+        1:"A technicality",
+        9:"One molecule with a megaphone",
+        10:"Your nose filed a minor complaint",
+        90:"Nothing happened. Your nose disagrees.",
+        99:"Pure evil, travel size",
+        100:"Big dreams. Zero follow through.",
+        109:"All bark and no stink",
+        190:"Small package, terrible contents",
+        500:"Impressive volume. Absolutely no personality.",
+        900:"An impressive amount of absolutely nothing",
+        909:"All thunder, no consequences",
+        919:"A big loud nothing",
+        990:"The silent evacuation",
+        999:"Everybody loses"
+      };
+
+      if (anchors[code]) {
+        name = anchors[code];
       } else {
-        const nounIndex = Math.max(a, smell, sound);
-        name = `A ${headlineAmount[a]} ${headlineSound[sound]} ${headlineSmell[smell]} ${headlineNouns[nounIndex]}`;
+        const dominant = Math.max(a, smell, sound);
+        const tied = [a,smell,sound].filter(v => v === dominant).length > 1;
+        const structure = code % 10;
+
+        // Different score shapes use genuinely different joke families and sentence structures.
+        if (a >= 8 && smell <= 2 && sound >= 7) {
+          name = pick(cleanJokes, code, 1);
+        } else if (a >= 8 && smell >= 7 && sound <= 2) {
+          name = pick(stinkJokes, code, 2);
+        } else if (a <= 2 && smell >= 7 && sound >= 7) {
+          name = pick(stinkJokes, code, 3);
+        } else if (sound >= 8 && smell <= 3) {
+          name = pick(loudJokes, code, 4);
+        } else if (smell >= 8 && sound <= 3) {
+          name = pick(quietJokes, code, 5);
+        } else if (a >= 8 && smell <= 3 && sound <= 3) {
+          name = pick(bigJokes, code, 6);
+        } else if (a <= 2 && smell <= 3 && sound <= 3) {
+          name = pick(tinyJokes, code, 7);
+        } else if (smell > a && smell > sound) {
+          name = pick(stinkJokes, code, 8);
+        } else if (sound > a && sound > smell) {
+          name = pick(loudJokes, code, 9);
+        } else if (a > smell && a > sound) {
+          name = pick(bigJokes, code, 10);
+        } else if (tied && dominant >= 7) {
+          name = pick(openings, code, 11);
+        } else {
+          // Ten deliberately different grammatical structures.
+          const forms = [
+            () => pick(openings, code, 12),
+            () => `${pick(openings, code, 13)}. ${pick(cleanJokes, code, 2)}`,
+            () => smell >= 5 ? pick(stinkJokes, code, 14) : pick(quietJokes, code, 14),
+            () => sound >= 5 ? pick(loudJokes, code, 15) : pick(tinyJokes, code, 15),
+            () => a >= 5 ? pick(bigJokes, code, 16) : pick(tinyJokes, code, 16),
+            () => `Somehow ${amountTone[a]} was still too much`,
+            () => `A ${soundTone[sound]} reminder that choices have consequences`,
+            () => `The ${smellTone[smell]} part is really doing the damage here`,
+            () => `Congratulations. The room now knows too much`,
+            () => `Nobody wins, but the ventilation loses hardest`
+          ];
+          name = forms[structure]();
+        }
+
+        // Guarantee headline uniqueness without turning the visible copy into stat soup.
+        // If a naturally repeated joke occurs, append one of many short human sounding codas
+        // derived from the exact score.
+        const codas = [
+          "Somehow worse in context",
+          "Nobody asked",
+          "A choice was made",
+          "The room objects",
+          "Please explain yourself",
+          "History will not care",
+          "The dog declines comment",
+          "Windows are now mandatory",
+          "Confidence was misplaced",
+          "This felt unnecessary"
+        ];
+        name = `${name}. ${codas[(a + smell * 3 + sound * 7) % codas.length]}`;
       }
 
-      let punchline;
-      if (a === 9 && smell === 1 && sound === 9) {
-        punchline = "An empty threat with excellent speakers.";
-      } else if (smell >= 8 && sound <= 2) {
-        punchline = "Nobody heard the crime, which is unfortunate because everybody can smell the evidence.";
-      } else if (sound >= 8 && smell <= 2) {
-        punchline = "The performance is doing far more damage than the aroma.";
-      } else if (a >= 8 && smell <= 2 && sound <= 2) {
-        punchline = "An impressive quantity of almost nothing anyone cares about.";
-      } else if (a <= 2 && smell >= 8) {
-        punchline = "Very little happened, yet your nose somehow got the worst ending.";
-      } else if (a <= 2 && sound >= 8) {
-        punchline = "Tiny payload. Stadium production values.";
-      } else if (a >= 8 && smell >= 8 && sound >= 8) {
-        punchline = "There are no winners here, only witnesses.";
-      } else if (smell > a && smell > sound) {
-        punchline = "The nose is carrying this entire disaster.";
-      } else if (sound > a && sound > smell) {
-        punchline = "Subtlety was never invited.";
-      } else if (a > smell && a > sound) {
-        punchline = "Quantity has mistaken itself for quality.";
-      } else if (severity <= 2) {
-        punchline = "Civilization is expected to recover.";
-      } else if (severity <= 5) {
-        punchline = "Not historic, but definitely worth an accusation.";
+      let description;
+      if (code === 919) {
+        description = "Huge payload. Huge noise. Almost no smell. An empty threat with excellent speakers.";
       } else {
-        punchline = "The atmosphere would like to speak to a manager.";
-      }
+        const amountLine = [
+          "Almost nothing escaped",
+          "A tiny amount escaped",
+          "The payload stayed small",
+          "There was a modest release",
+          "A respectable cloud appeared",
+          "A decent amount entered the room",
+          "The quantity was getting ambitious",
+          "A huge amount joined the atmosphere",
+          "The payload was frankly excessive",
+          "The quantity was absurd"
+        ][a];
 
-      const description =
-        `Score ${code}. ${amountPhrase[a]}, ${smellPhrase[smell]}, and ${soundPhrase[sound]}. ${punchline}`;
+        const smellLine = [
+          "your nose noticed nothing",
+          "the smell barely registered",
+          "there was only a faint clue",
+          "the funk was noticeable",
+          "the stink had arrived",
+          "the reek meant business",
+          "the odor became actively rude",
+          "the smell crossed into hazard territory",
+          "the room needed an evacuation plan",
+          "the stench became a character witness"
+        ][smell];
+
+        const soundLine = [
+          "it made no sound",
+          "it barely whispered",
+          "it stayed quiet",
+          "it was clearly audible",
+          "it announced itself",
+          "it was loud",
+          "it boomed",
+          "it thundered",
+          "it was brutally loud",
+          "it sounded like the final level"
+        ][sound];
+
+        const closer =
+          smell >= 8 ? pick(stinkJokes, code, 17) :
+          sound >= 8 ? pick(loudJokes, code, 18) :
+          a >= 8 ? pick(bigJokes, code, 19) :
+          severity <= 2 ? pick(tinyJokes, code, 20) :
+          pick(openings, code, 21);
+
+        description = `${amountLine}, ${smellLine}, and ${soundLine}. ${closer}.`;
+      }
 
       return { emoji, name, description };
     }
@@ -478,18 +644,10 @@
       const c = currentClassification();
       const code = values.join("");
 
-      animateCode(code);
-
-      const classificationEl = document.getElementById("classification");
-      const verdictNameEl = document.getElementById("verdict-name");
+      animateCode(code);      const verdictNameEl = document.getElementById("verdict-name");
       const descriptionEl = document.getElementById("description");
-      const summaryEl = document.getElementById("summary");
-
-      if (classificationEl) classificationEl.textContent = `${c.emoji} ${c.name}`;
-      if (verdictNameEl) verdictNameEl.textContent = `${c.emoji} ${c.name}`;
-      if (descriptionEl) descriptionEl.textContent = c.description;
-      if (summaryEl) summaryEl.textContent = `A ${values[0]} · S ${values[1]} · S ${values[2]}`;
-    }
+      const summaryEl = document.getElementById("summary");      if (verdictNameEl) verdictNameEl.textContent = `${c.emoji} ${c.name}`;
+      if (descriptionEl) descriptionEl.textContent = c.description;    }
 
     function getShareText() {
       const c = currentClassification();
