@@ -407,10 +407,11 @@
         100:"Big dreams. Zero follow through.",
         109:"All bark and no stink",
         190:"Small package, terrible contents",
-        500:"Impressive volume. Absolutely no personality.",
-        900:"An impressive amount of absolutely nothing",
+        500:"Big fart. Zero personality.",
+        900:"A heroic amount of nothing",
         909:"All thunder, no consequences",
         919:"A big loud nothing",
+        989:"MATT-ASS-TROPHE",
         990:"The silent evacuation",
         999:"Everybody loses"
       };
@@ -481,7 +482,9 @@
       }
 
       let description;
-      if (code === 919) {
+      if (code === 989) {
+        description = "Matt came. He farted. He conquered.";
+      } else if (code === 919) {
         description = "Huge payload. Huge noise. Almost no smell. An empty threat with excellent speakers.";
       } else {
         const amountLine = [
@@ -531,6 +534,12 @@
           pick(openings, code, 21);
 
         description = `${amountLine}, ${smellLine}, and ${soundLine}. ${closer}.`;
+      }
+
+      // Headlines are capped at six words, no exceptions.
+      const words = name.trim().split(/\s+/);
+      if (words.length > 6) {
+        name = words.slice(0, 6).join(" ").replace(/[.,;:!?]+$/, "");
       }
 
       return { emoji, name, description };
