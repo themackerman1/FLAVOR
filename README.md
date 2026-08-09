@@ -1,11 +1,3 @@
-# ASS — Authored Headline Pass
+# ASS headline cleanup v2
 
-The headline library has been rewritten toward short, idiomatic, sardonic punchlines inspired by the supplied examples.
-
-Rules:
-- all 1,000 headlines remain unique
-- five words maximum
-- severity influences tone
-- 919 remains “A big loud nothing”
-- 989 remains “MATT-ASS-TROPHE”
-- 989 description remains “Matt came. He farted. He conquered.”
+Validated: 1,000 unique headlines; no headline contains a numerical score; five words maximum; supplied phrases and special 919/989 results preserved.
