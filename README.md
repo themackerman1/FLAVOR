@@ -1,12 +1,9 @@
-# A.S.S. — Streamlined NYC Synthwave Edition
+# A.S.S. — Typography Refined
 
-A cleaner GitHub Pages build with one canonical NYC synthwave masthead.
+NYC synthwave build with a cleaner type hierarchy.
 
-Layout:
-1. Masthead
-2. Amount / Smell / Sound
-3. A.S.S. score + containment result
-4. Transmit Score
-
-Typography is intentionally reduced to a simple sans-serif hierarchy. Decorative panel chrome,
-micro-labels, slime, and competing display styles have been minimized.
+- Slider subheads: looser tracking, larger line-height, easier reading
+- Result classification: reduced scale and weight
+- Result description: smaller, calmer terminal-style reading size
+- A.S.S. numeric code: reduced so it no longer dominates the result
+- Structure, database, masthead, sliders, and sharing unchanged
