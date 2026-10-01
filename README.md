@@ -1,19 +1,11 @@
-# A.S.S. — V7 Native Audio + Fresh Icon URLs
+# A.S.S. — V8 Root-Level Audio
 
-This build deliberately avoids the two mechanisms that were failing on mobile.
+GitHub Pages deployment build.
 
-## Audio
-- No Web Audio API / AudioContext.
-- Includes 10 real WAV files under /audio.
-- Slider values 0–9 each play their own progressively higher 8-bit WAV.
-- Audio elements are preloaded and primed from a direct touch/pointer gesture.
+- No /audio subfolder.
+- All ten 8-bit WAV files sit directly beside index.html.
+- index.html references ass-step-0-v7.wav through ass-step-9-v7.wav directly.
+- New V7 favicon, Apple touch icon, PWA icons, and manifest are preserved.
+- Existing visual experience, 1,000 results, special scores, and Transmit Score are preserved.
 
-## Icons
-- All previous icon files were removed.
-- Every icon has a brand-new v7 filename to defeat browser/PWA icon caches.
-- Fresh favicon ICO + 32/64 PNG.
-- Fresh 180px Apple touch icon.
-- Fresh 192/512 PWA icons.
-- Fresh versioned manifest filename and start URL.
-
-The V3 visual experience, 1,000-result database, special scores, and Transmit Score are preserved.
+Upload/extract the contents of this ZIP directly into the FLAVOR repository root.
