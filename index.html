@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#080414">
-<meta name="ass-build" content="experience-redesign-v9-low-latency-audio">
+<meta name="ass-build" content="experience-redesign-v10-native-audio-pool">
 <title>A.S.S. — Atmospheric Severity Score</title>
 <link rel="icon" href="ass-nyc-favicon-v7.ico?v=7" sizes="any">
 <link rel="icon" type="image/png" sizes="32x32" href="ass-nyc-favicon-32-v7.png?v=7">
@@ -77,7 +77,7 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border:4px solid whit
 }
 </style>
 </head>
-<body data-build="experience-redesign-v9-low-latency-audio">
+<body data-build="experience-redesign-v10-native-audio-pool">
 <main class="app">
   <header class="hero"><img src="masthead-nyc-synthwave.png" alt="A.S.S. Atmospheric Severity Score — NYC paranormal synthwave"></header>
 
@@ -123,91 +123,44 @@ function render(){
   resultDesc.textContent=r.description;
 }
 
-// V9: root-level WAV assets, decoded once for low-latency slider playback.
-const soundUrls=Array.from({length:10},(_,i)=>`ass-step-${i}-v7.wav`);
-let audioCtx=null;
-let soundBuffers=new Array(10).fill(null);
-let audioReady=false;
-let loadingAudio=null;
-let lastSoundAt=0;
+// V10: mobile-safe native WAV pool.
+const SOUND_POOL_SIZE=4;
+const soundPools=Array.from({length:10},(_,value)=>
+  Array.from({length:SOUND_POOL_SIZE},()=>{
+    const audio=new Audio(`ass-step-${value}-v7.wav`);
+    audio.preload="auto";
+    audio.volume=0.68;
+    audio.load();
+    return audio;
+  })
+);
+const soundPoolCursor=new Array(10).fill(0);
 let lastSoundValue=-1;
+let lastSoundAt=0;
 
-function ensureAudioContext(){
-  const AC=window.AudioContext||window.webkitAudioContext;
-  if(!AC)return null;
-  if(!audioCtx){
-    audioCtx=new AC({latencyHint:"interactive"});
-  }
-  return audioCtx;
+function primeNativeAudio(){
+  soundPools.flat().forEach(audio=>audio.load());
 }
-
-async function loadSliderSounds(){
-  if(audioReady)return;
-  if(loadingAudio)return loadingAudio;
-  const ctx=ensureAudioContext();
-  if(!ctx)return;
-
-  loadingAudio=Promise.all(soundUrls.map(async (url,i)=>{
-    const response=await fetch(url,{cache:"force-cache"});
-    if(!response.ok)throw new Error(`Audio ${response.status}: ${url}`);
-    const bytes=await response.arrayBuffer();
-    soundBuffers[i]=await ctx.decodeAudioData(bytes);
-  })).then(()=>{
-    audioReady=true;
-  }).catch(()=>{
-    // Keep the UI fully functional even if audio loading fails.
-    audioReady=false;
-    loadingAudio=null;
-  });
-  return loadingAudio;
-}
-
-function unlockAndLoadAudio(){
-  const ctx=ensureAudioContext();
-  if(!ctx)return;
-  if(ctx.state==="suspended")ctx.resume().catch(()=>{});
-  loadSliderSounds();
-}
-
 function playSliderSound(value){
-  const ctx=ensureAudioContext();
-  if(!ctx)return;
-
-  // Don't stack duplicate input events from the same physical slider position.
-  const nowMs=performance.now();
-  if(value===lastSoundValue && nowMs-lastSoundAt<28)return;
+  const now=performance.now();
+  if(value===lastSoundValue && now-lastSoundAt<24)return;
   lastSoundValue=value;
-  lastSoundAt=nowMs;
-
-  if(ctx.state==="suspended"){
-    ctx.resume().catch(()=>{});
-    return;
-  }
-  const buffer=soundBuffers[value];
-  if(!buffer){
-    loadSliderSounds();
-    return;
-  }
-
-  // BufferSource creation is cheap and starts immediately—no media seeking/play queue.
-  const source=ctx.createBufferSource();
-  const gain=ctx.createGain();
-  source.buffer=buffer;
-  gain.gain.value=0.82;
-  source.connect(gain);
-  gain.connect(ctx.destination);
-  source.start(0);
+  lastSoundAt=now;
+  const pool=soundPools[value];
+  if(!pool)return;
+  const cursor=soundPoolCursor[value];
+  const audio=pool[cursor];
+  soundPoolCursor[value]=(cursor+1)%SOUND_POOL_SIZE;
+  try{
+    audio.currentTime=0;
+    const playback=audio.play();
+    if(playback && playback.catch)playback.catch(()=>{});
+  }catch(e){}
 }
-
-// Start decoding as soon as the first genuine interaction occurs.
-["pointerdown","touchstart","mousedown","keydown"].forEach(evt=>{
-  document.addEventListener(evt,unlockAndLoadAudio,{once:true,passive:evt!=="keydown"});
+["touchstart","pointerdown","mousedown","keydown"].forEach(evt=>{
+  document.addEventListener(evt,primeNativeAudio,{once:true,passive:evt!=="keydown"});
 });
-
 inputs.forEach((input,i)=>{
-  ["pointerdown","touchstart","mousedown","keydown"].forEach(evt=>{
-    input.addEventListener(evt,unlockAndLoadAudio,{passive:evt!=="keydown"});
-  });
   input.addEventListener("input",()=>{
     values[i]=parseInt(input.value,10);
     render();

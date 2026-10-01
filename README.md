@@ -1,9 +1,10 @@
-# A.S.S. — V9 Low-Latency Audio
+# A.S.S. — V10 Native Audio Pool
 
-- WAV files remain at repository root for reliable GitHub Pages deployment.
-- WAVs are fetched and decoded once after the first user interaction.
-- Slider playback uses in-memory Web Audio AudioBuffers rather than HTML Audio seek/play.
-- AudioContext requests interactive latency.
-- Duplicate rapid events at the same slider value are suppressed.
-- No audio subfolder.
-- V7 icon/favicon assets remain unchanged.
+- No Web Audio playback.
+- Ten WAV files remain at repository root.
+- Four preloaded native Audio players per pitch.
+- Round-robin playback avoids seek/reset contention during rapid dragging.
+- Same-value duplicate events inside 24ms are suppressed.
+- Existing icons, interface, 1,000 results, special scores, and sharing are unchanged.
+
+Deploy the ZIP contents directly into the FLAVOR repository root.
