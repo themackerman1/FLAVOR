@@ -14,8 +14,8 @@ body:after{content:"";position:fixed;inset:0;pointer-events:none;opacity:.18;bac
 .header:before,.header:after{content:"";position:absolute;width:11px;height:11px;border-radius:50%;background:#777b70;box-shadow:inset 2px 2px #aaa,inset -2px -2px #222;top:12px}.header:before{left:12px}.header:after{right:12px}
 .logo{font:clamp(68px,14vw,130px)/.78 Impact,Haettenschweiler,sans-serif;letter-spacing:.035em;color:#f1ede0;text-shadow:4px 5px 0 #79120d,0 0 15px #c7251b}
 .subtitle{display:inline-block;margin-top:20px;padding:7px 14px;background:#bbb39a;color:#191a17;border:3px solid #171916;box-shadow:inset 0 0 0 2px #706c5e;font-weight:900;font-size:clamp(10px,2vw,14px);letter-spacing:.09em}
-.slimeRail{height:34px;position:relative;background:linear-gradient(#8df04a,#429522);border-left:5px solid #555a50;border-right:5px solid #555a50;box-shadow:inset 0 6px 9px rgba(210,255,140,.35),inset 0 -6px 10px rgba(0,50,0,.35)}
-.slimeRail:before,.slimeRail:after{content:"";position:absolute;top:22px;background:#5fc22e;border-radius:0 0 50% 50%;filter:drop-shadow(0 4px 2px rgba(0,0,0,.5))}.slimeRail:before{left:12%;width:28px;height:42px}.slimeRail:after{right:21%;width:18px;height:30px}
+
+
 .panel{position:relative;padding:24px;border:5px solid #555a50;background:linear-gradient(115deg,#252922,#10130f);box-shadow:inset 0 0 0 2px #080a07,0 18px 45px #000}
 .panel:before{content:"INPUT ARRAY // ASS-3";position:absolute;top:7px;right:12px;color:#777e73;font-size:9px;letter-spacing:.08em}
 .inputs{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:12px}
@@ -34,27 +34,35 @@ input[type=range]{width:100%;height:30px;accent-color:#d92b20;cursor:pointer}
 .code{position:relative;color:#d3ff6d;font:bold 11px "Courier New";letter-spacing:.1em}
 .title{position:relative;margin:10px 0 12px;color:var(--slime2);font:900 clamp(30px,6vw,58px)/1 Georgia,serif;text-shadow:0 0 8px #55ff37,0 0 22px rgba(80,255,50,.25)}
 .copy{position:relative;margin:0;max-width:760px;color:#dbead6;font-size:14px;line-height:1.55}
-.drip{position:absolute;z-index:3;background:linear-gradient(#8aef48,#3b8d20);border-radius:45% 55% 50% 50%;opacity:.9;pointer-events:none}.drip.a{width:20px;height:62px;left:-5px;top:46%}.drip.b{width:14px;height:42px;right:5%;top:18%}.drip.c{width:26px;height:30px;right:-7px;bottom:13%}
+
 .footer{margin-top:16px;text-align:center;color:#697064;font-size:9px;letter-spacing:.14em}
 @media(max-width:680px){body{padding:6px}.header{padding-top:22px}.inputs{grid-template-columns:1fr;gap:10px}.unit{display:grid;grid-template-columns:95px 74px 1fr;gap:10px;align-items:center;padding:10px}.unit:before{top:6px;right:6px;width:8px;height:8px}.name{margin:0;font-size:12px}.readout{height:64px;margin:0;font-size:50px}.scale{display:none}input[type=range]{height:44px}.panel{padding:14px 10px 12px}.reportWrap{padding:10px}.screen{padding:17px;min-height:230px}.copy{font-size:14px}}
 
 .masthead{margin:0;background:#050705;border-left:5px solid #555a50;border-right:5px solid #555a50;overflow:hidden;line-height:0;box-shadow:0 8px 25px #000}
 .masthead img{display:block;width:100%;height:auto;object-fit:contain}
-@media(max-width:680px){.masthead{border-left:2px solid #555a50;border-right:2px solid #555a50}.slimeRail{height:20px}.slimeRail:before{height:23px;top:12px}.slimeRail:after{height:18px;top:12px}}
+@media(max-width:680px){.masthead{border-left:2px solid #555a50;border-right:2px solid #555a50}}
+
+.shareRow{display:flex;justify-content:center;margin-top:14px}
+.shareButton{min-height:50px;padding:0 24px;border:3px solid #66120d;border-radius:6px;background:linear-gradient(#e23a2d,#8f140e);color:#fff7e8;font:900 13px "Courier New",monospace;letter-spacing:.09em;cursor:pointer;box-shadow:inset 0 0 0 2px rgba(255,255,255,.08),0 0 15px rgba(230,40,28,.22);touch-action:manipulation}
+.shareButton:hover{filter:brightness(1.08)}
+.shareButton:active{transform:translateY(1px)}
+.shareButton:focus-visible{outline:3px solid #b4ff58;outline-offset:3px}
+.shareStatus{min-height:16px;margin-top:7px;text-align:center;color:#94a28e;font-size:9px;letter-spacing:.07em}
+@media(max-width:680px){.shareButton{width:100%;min-height:54px;font-size:13px}}
 </style></head>
 <body><main class="app">
 <div class="hazard"></div>
 <header class="masthead"><img src="ass-masthead.webp" alt="A.S.S. — Atmospheric Severity Score: glowing red letters, paranormal ghost, industrial hazard stripes and green ectoplasm" width="2048" height="683" fetchpriority="high"></header>
-<div class="slimeRail"></div>
+
 <section class="panel">
-<span class="drip a"></span><span class="drip b"></span>
+
 <div class="inputs">
 <div class="unit"><div class="name">A // AMOUNT<small>ECTOPLASMIC VOLUME</small></div><div class="readout" id="va">0</div><div><input id="amount" type="range" min="0" max="9" value="0" aria-label="Amount"><div class="scale"><span>0</span><span>9</span></div></div></div>
 <div class="unit"><div class="name">S // SMELL<small>ODOR HAZARD</small></div><div class="readout" id="vs">0</div><div><input id="smell" type="range" min="0" max="9" value="0" aria-label="Smell"><div class="scale"><span>0</span><span>9</span></div></div></div>
 <div class="unit"><div class="name">S // SOUND<small>ACOUSTIC EVENT</small></div><div class="readout" id="vd">0</div><div><input id="sound" type="range" min="0" max="9" value="0" aria-label="Sound"><div class="scale"><span>0</span><span>9</span></div></div></div>
 </div></section>
 <section class="reportWrap"><div class="reportTop"><div class="reportLabel">PARANORMAL CONTAINMENT REPORT</div><div class="lamps"><i class="lamp"></i><i class="lamp"></i><i class="lamp"></i></div></div>
-<div class="screen" aria-live="polite"><span class="drip c"></span><div class="code" id="code">ASS CODE // 000</div><h1 class="title" id="title"></h1><p class="copy" id="copy"></p></div></section>
+<div class="screen" aria-live="polite"><div class="code" id="code">ASS CODE // 000</div><h1 class="title" id="title"></h1><p class="copy" id="copy"></p></div><div class="shareRow"><button class="shareButton" id="shareButton" type="button">TRANSMIT SCORE</button></div><div class="shareStatus" id="shareStatus" aria-live="polite"></div></section>
 <div class="hazard"></div><div class="footer">CONTAINMENT DIVISION · HANDLE WITH EXTREME IMMATURITY</div>
 </main>
 <script>
@@ -63,5 +71,24 @@ const values=[0,0,0];
 const inputs=[document.getElementById("amount"),document.getElementById("smell"),document.getElementById("sound")];
 const outs=[document.getElementById("va"),document.getElementById("vs"),document.getElementById("vd")];
 function render(){const key=values.join(""),r=resultLibrary[key];outs.forEach((o,i)=>o.textContent=values[i]);document.getElementById("code").textContent=`ASS CODE // ${key}`;document.getElementById("title").textContent=`${r.emoji} ${r.name}`;document.getElementById("copy").textContent=r.description;}
-inputs.forEach((input,i)=>input.addEventListener("input",()=>{values[i]=Math.max(0,Math.min(9,parseInt(input.value,10)||0));render();}));render();
+inputs.forEach((input,i)=>input.addEventListener("input",()=>{values[i]=Math.max(0,Math.min(9,parseInt(input.value,10)||0));render();}));
+const shareButton=document.getElementById("shareButton");
+const shareStatus=document.getElementById("shareStatus");
+shareButton.addEventListener("click",async()=>{
+  const key=values.join(""),r=resultLibrary[key],text=`${key} — ${r.name} ${r.emoji}`;
+  try{
+    if(navigator.share){
+      await navigator.share({text});
+      shareStatus.textContent="SCORE TRANSMITTED";
+    }else if(navigator.clipboard && window.isSecureContext){
+      await navigator.clipboard.writeText(text);
+      shareStatus.textContent="SCORE COPIED";
+    }else{
+      shareStatus.textContent=text;
+    }
+  }catch(err){
+    if(err && err.name!=="AbortError") shareStatus.textContent="TRANSMISSION FAILED";
+  }
+});
+render();
 </script></body></html>
