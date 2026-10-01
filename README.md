@@ -1,9 +1,10 @@
-# A.S.S. — Typography Refined
-
-NYC synthwave build with a cleaner type hierarchy.
-
-- Slider subheads: looser tracking, larger line-height, easier reading
-- Result classification: reduced scale and weight
-- Result description: smaller, calmer terminal-style reading size
-- A.S.S. numeric code: reduced so it no longer dominates the result
-- Structure, database, masthead, sliders, and sharing unchanged
+# A.S.S. — Typography Redesign V2 Final
+Visible changes:
+- Slider subheadlines removed
+- Slider labels compact uppercase
+- Slider numbers 22px
+- A.S.S. code 38–56px
+- Result headline 17px inline with emoji
+- Result body 13px, left aligned
+- Result card made much shorter
+Build marker: type-redesign-v2-final
