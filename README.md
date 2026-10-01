@@ -1,11 +1,12 @@
-# A.S.S. — V5 Audio Fix
+# A.S.S. — V6 Mobile Audio + New Icons
 
-The synthwave V3 experience with mobile-safe 8-bit slider audio.
-
-Audio changes:
-- AudioContext is created/resumed directly on pointer/touch/mouse/keyboard interaction
-- Output is primed during the user gesture for iOS/Safari autoplay restrictions
-- Slider movement then plays a louder 8-bit oscillator tone
-- Pitch rises clearly from 0 through 9
-- Amount, Smell, and Sound retain distinct chip-style voices
-- No external audio files and no extra UI controls
+- New synthwave ghost favicon family derived from the new masthead visual direction
+- 16/32/64 favicon PNGs + favicon.ico
+- 180x180 Apple touch icon
+- 192x192 and 512x512 installable web-app icons
+- PWA web manifest
+- Rebuilt mobile audio engine with a persistent master output
+- Audio unlocks on the first page gesture plus direct slider gestures
+- iOS-compatible silent-buffer unlock
+- Slider tones fire on input and change, with ascending 0–9 pitch
+- Existing V3 experience, 1,000 results, special scores, and sharing preserved

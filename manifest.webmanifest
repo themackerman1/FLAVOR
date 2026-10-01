@@ -1,11 +1,10 @@
 {
-  "name": "ASS",
-  "short_name": "ASS",
-  "description": "Atmospheric Severity System.",
+  "name": "A.S.S. \u2014 Atmospheric Severity Score",
+  "short_name": "A.S.S.",
   "start_url": "./",
   "display": "standalone",
-  "background_color": "#050312",
-  "theme_color": "#07030f",
+  "background_color": "#070410",
+  "theme_color": "#080414",
   "icons": [
     {
       "src": "icon-192.png",
