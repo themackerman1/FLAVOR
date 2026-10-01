@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#080414">
-<meta name="ass-build" content="experience-redesign-v3">
+<meta name="ass-build" content="experience-redesign-v4-sound">
 <title>A.S.S. — Atmospheric Severity Score</title>
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <style>
@@ -72,7 +72,7 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border:4px solid whit
 }
 </style>
 </head>
-<body data-build="experience-redesign-v3">
+<body data-build="experience-redesign-v4-sound">
 <main class="app">
   <header class="hero"><img src="masthead-nyc-synthwave.png" alt="A.S.S. Atmospheric Severity Score — NYC paranormal synthwave"></header>
 
@@ -117,7 +117,38 @@ function render(){
   resultName.textContent=r.name;
   resultDesc.textContent=r.description;
 }
-inputs.forEach((input,i)=>input.addEventListener("input",()=>{values[i]=parseInt(input.value,10);render();}));
+
+let audioCtx=null;
+function playSliderBlip(channel,value){
+  const AC=window.AudioContext||window.webkitAudioContext;
+  if(!AC)return;
+  if(!audioCtx)audioCtx=new AC();
+  if(audioCtx.state==="suspended")audioCtx.resume();
+  const now=audioCtx.currentTime;
+  const osc=audioCtx.createOscillator();
+  const gain=audioCtx.createGain();
+
+  // Pitch rises clearly from 0–9. Each channel has its own chip-like voice.
+  const bases=[145,180,220];
+  const steps=[22,27,33];
+  osc.frequency.setValueAtTime(bases[channel]+value*steps[channel],now);
+  osc.type=["square","sawtooth","square"][channel];
+
+  // Tiny arcade envelope: immediate attack, very short decay.
+  gain.gain.setValueAtTime(0.0001,now);
+  gain.gain.exponentialRampToValueAtTime(0.055,now+0.004);
+  gain.gain.exponentialRampToValueAtTime(0.0001,now+0.065);
+
+  osc.connect(gain);
+  gain.connect(audioCtx.destination);
+  osc.start(now);
+  osc.stop(now+0.07);
+}
+inputs.forEach((input,i)=>input.addEventListener("input",()=>{
+  values[i]=parseInt(input.value,10);
+  render();
+  playSliderBlip(i,values[i]);
+}));
 const shareButton=document.getElementById("shareButton");
 const shareStatus=document.getElementById("shareStatus");
 shareButton.addEventListener("click",async()=>{
