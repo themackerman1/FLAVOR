@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#080414">
-<meta name="ass-build" content="experience-redesign-v4-sound">
+<meta name="ass-build" content="experience-redesign-v5-audio-fixed">
 <title>A.S.S. — Atmospheric Severity Score</title>
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <style>
@@ -72,7 +72,7 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border:4px solid whit
 }
 </style>
 </head>
-<body data-build="experience-redesign-v4-sound">
+<body data-build="experience-redesign-v5-audio-fixed">
 <main class="app">
   <header class="hero"><img src="masthead-nyc-synthwave.png" alt="A.S.S. Atmospheric Severity Score — NYC paranormal synthwave"></header>
 
@@ -119,36 +119,62 @@ function render(){
 }
 
 let audioCtx=null;
-function playSliderBlip(channel,value){
+function unlockAudio(){
   const AC=window.AudioContext||window.webkitAudioContext;
   if(!AC)return;
   if(!audioCtx)audioCtx=new AC();
   if(audioCtx.state==="suspended")audioCtx.resume();
+
+  // Prime the output while we're still inside the user's pointer/touch gesture.
+  const osc=audioCtx.createOscillator();
+  const gain=audioCtx.createGain();
+  gain.gain.value=0.00001;
+  osc.connect(gain);
+  gain.connect(audioCtx.destination);
+  osc.start();
+  osc.stop(audioCtx.currentTime+0.01);
+}
+function playSliderBlip(channel,value){
+  if(!audioCtx)return;
+  if(audioCtx.state==="suspended"){
+    audioCtx.resume().then(()=>playSliderBlip(channel,value)).catch(()=>{});
+    return;
+  }
+
   const now=audioCtx.currentTime;
   const osc=audioCtx.createOscillator();
   const gain=audioCtx.createGain();
 
-  // Pitch rises clearly from 0–9. Each channel has its own chip-like voice.
-  const bases=[145,180,220];
-  const steps=[22,27,33];
-  osc.frequency.setValueAtTime(bases[channel]+value*steps[channel],now);
-  osc.type=["square","sawtooth","square"][channel];
+  // Strongly audible arcade scale from low to high.
+  const bases=[180,220,260];
+  const ratios=[1,1.12246,1.25992,1.33484,1.49831,1.68179,1.88775,2,2.24492,2.51984];
+  osc.frequency.setValueAtTime(bases[channel]*ratios[value],now);
+  osc.type=channel===1?"sawtooth":"square";
 
-  // Tiny arcade envelope: immediate attack, very short decay.
+  gain.gain.cancelScheduledValues(now);
   gain.gain.setValueAtTime(0.0001,now);
-  gain.gain.exponentialRampToValueAtTime(0.055,now+0.004);
-  gain.gain.exponentialRampToValueAtTime(0.0001,now+0.065);
+  gain.gain.exponentialRampToValueAtTime(0.12,now+0.006);
+  gain.gain.exponentialRampToValueAtTime(0.0001,now+0.09);
 
   osc.connect(gain);
   gain.connect(audioCtx.destination);
   osc.start(now);
-  osc.stop(now+0.07);
+  osc.stop(now+0.095);
 }
-inputs.forEach((input,i)=>input.addEventListener("input",()=>{
-  values[i]=parseInt(input.value,10);
-  render();
-  playSliderBlip(i,values[i]);
-}));
+
+inputs.forEach((input,i)=>{
+  // Audio must be unlocked directly by a user gesture on mobile Safari/Chrome.
+  input.addEventListener("pointerdown",unlockAudio,{passive:true});
+  input.addEventListener("touchstart",unlockAudio,{passive:true});
+  input.addEventListener("mousedown",unlockAudio,{passive:true});
+  input.addEventListener("keydown",unlockAudio);
+
+  input.addEventListener("input",()=>{
+    values[i]=parseInt(input.value,10);
+    render();
+    playSliderBlip(i,values[i]);
+  });
+});
 const shareButton=document.getElementById("shareButton");
 const shareStatus=document.getElementById("shareStatus");
 shareButton.addEventListener("click",async()=>{

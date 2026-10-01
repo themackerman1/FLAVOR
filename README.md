@@ -1,10 +1,11 @@
-# A.S.S. — Experience Redesign V4 + 8-bit Sound
+# A.S.S. — V5 Audio Fix
 
-V3 interface preserved with slider audio restored.
+The synthwave V3 experience with mobile-safe 8-bit slider audio.
 
-- Every slider step triggers a short synthesized 8-bit blip
-- Pitch increases from values 0 through 9
-- Amount, Smell, and Sound use slightly different chip-style voices
-- Web Audio only: no external audio assets
-- No extra sound toggle/control added
-- 1,000-result database, masthead, sharing, and special results preserved
+Audio changes:
+- AudioContext is created/resumed directly on pointer/touch/mouse/keyboard interaction
+- Output is primed during the user gesture for iOS/Safari autoplay restrictions
+- Slider movement then plays a louder 8-bit oscillator tone
+- Pitch rises clearly from 0 through 9
+- Amount, Smell, and Sound retain distinct chip-style voices
+- No external audio files and no extra UI controls
