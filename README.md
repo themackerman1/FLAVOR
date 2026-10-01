@@ -1,10 +1,14 @@
-# ASS — Simplified Three-Control Build
+# ASS — Industrial Slime Build
 
-Exactly three user inputs:
-- Amount
-- Smell
-- Sound
+No generated hero artwork is used.
 
-All other buttons/actions have been removed. Score and containment report update automatically.
-Desktop uses the exact generated console artwork as the interactive visual chassis.
-Mobile uses the same artwork as an image-backed environment with three large range controls.
+Visual system is native HTML/CSS:
+- black/yellow caution stripes
+- riveted industrial steel
+- slime rails and drips
+- red warning lamps
+- red instrument readouts
+- green CRT containment report
+- exactly three inputs: Amount, Smell, Sound
+
+Upload all files to the GitHub Pages repository root.
