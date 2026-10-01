@@ -1,12 +1,19 @@
-# A.S.S. — V6 Mobile Audio + New Icons
+# A.S.S. — V7 Native Audio + Fresh Icon URLs
 
-- New synthwave ghost favicon family derived from the new masthead visual direction
-- 16/32/64 favicon PNGs + favicon.ico
-- 180x180 Apple touch icon
-- 192x192 and 512x512 installable web-app icons
-- PWA web manifest
-- Rebuilt mobile audio engine with a persistent master output
-- Audio unlocks on the first page gesture plus direct slider gestures
-- iOS-compatible silent-buffer unlock
-- Slider tones fire on input and change, with ascending 0–9 pitch
-- Existing V3 experience, 1,000 results, special scores, and sharing preserved
+This build deliberately avoids the two mechanisms that were failing on mobile.
+
+## Audio
+- No Web Audio API / AudioContext.
+- Includes 10 real WAV files under /audio.
+- Slider values 0–9 each play their own progressively higher 8-bit WAV.
+- Audio elements are preloaded and primed from a direct touch/pointer gesture.
+
+## Icons
+- All previous icon files were removed.
+- Every icon has a brand-new v7 filename to defeat browser/PWA icon caches.
+- Fresh favicon ICO + 32/64 PNG.
+- Fresh 180px Apple touch icon.
+- Fresh 192/512 PWA icons.
+- Fresh versioned manifest filename and start URL.
+
+The V3 visual experience, 1,000-result database, special scores, and Transmit Score are preserved.

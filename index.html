@@ -4,13 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#080414">
-<meta name="ass-build" content="experience-redesign-v6-mobile-audio-icons">
+<meta name="ass-build" content="experience-redesign-v7-native-audio">
 <title>A.S.S. — Atmospheric Severity Score</title>
-<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
-<link rel="icon" href="favicon.ico" sizes="any">
-<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
-<link rel="icon" type="image/png" sizes="64x64" href="favicon-64.png">
-<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="ass-nyc-favicon-v7.ico?v=7" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="ass-nyc-favicon-32-v7.png?v=7">
+<link rel="icon" type="image/png" sizes="64x64" href="ass-nyc-favicon-64-v7.png?v=7">
+<link rel="apple-touch-icon" sizes="180x180" href="ass-nyc-touch-180-v7.png?v=7">
+<link rel="manifest" href="ass-manifest-v7.webmanifest?v=7">
 
 <style>
 :root{--ink:#070410;--navy:#0c0820;--violet:#25104d;--pink:#ff2ba6;--cyan:#31e8ff;--orange:#ff842c;--yellow:#ffd53d;--white:#fffaf1;--muted:#aaa3c0}
@@ -77,7 +77,7 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border:4px solid whit
 }
 </style>
 </head>
-<body data-build="experience-redesign-v6-mobile-audio-icons">
+<body data-build="experience-redesign-v7-native-audio">
 <main class="app">
   <header class="hero"><img src="masthead-nyc-synthwave.png" alt="A.S.S. Atmospheric Severity Score — NYC paranormal synthwave"></header>
 
@@ -123,83 +123,67 @@ function render(){
   resultDesc.textContent=r.description;
 }
 
-let audioCtx=null;
-let masterGain=null;
-let audioUnlocked=false;
-
-function ensureAudio(){
-  const AC=window.AudioContext||window.webkitAudioContext;
-  if(!AC)return false;
-  if(!audioCtx){
-    audioCtx=new AC();
-    masterGain=audioCtx.createGain();
-    masterGain.gain.value=0.34;
-    masterGain.connect(audioCtx.destination);
-  }
-  return true;
-}
-
-function unlockAudio(){
-  if(!ensureAudio())return;
-  const resume=audioCtx.state==="suspended" ? audioCtx.resume() : Promise.resolve();
-  resume.then(()=>{
-    // Play a nearly silent buffer immediately inside/after the user gesture.
-    // This is a long-standing iOS Safari-safe way to open the audio output.
-    const buffer=audioCtx.createBuffer(1,1,22050);
-    const source=audioCtx.createBufferSource();
-    source.buffer=buffer;
-    source.connect(masterGain);
-    source.start(0);
-    audioUnlocked=true;
-  }).catch(()=>{});
-}
-
-function playSliderBlip(channel,value){
-  if(!ensureAudio())return;
-  if(audioCtx.state==="suspended"){
-    audioCtx.resume().then(()=>playSliderBlip(channel,value)).catch(()=>{});
-    return;
-  }
-  audioUnlocked=true;
-  const now=audioCtx.currentTime;
-  const osc=audioCtx.createOscillator();
-  const amp=audioCtx.createGain();
-
-  // Musical arcade scale: unmistakably higher at every slider step.
-  const scale=[1,1.12246,1.25992,1.33484,1.49831,1.68179,1.88775,2,2.24492,2.51984];
-  const base=[165,196,220][channel];
-  osc.type=channel===1?"sawtooth":"square";
-  osc.frequency.setValueAtTime(base*scale[value],now);
-
-  amp.gain.setValueAtTime(0.0001,now);
-  amp.gain.exponentialRampToValueAtTime(0.24,now+0.004);
-  amp.gain.exponentialRampToValueAtTime(0.0001,now+0.085);
-  osc.connect(amp);
-  amp.connect(masterGain);
-  osc.start(now);
-  osc.stop(now+0.09);
-}
-
-// Unlock from the first gesture anywhere on the page, not only the range thumb.
-// pointerdown covers modern iOS/Android; touchend/click are fallbacks.
-["pointerdown","touchend","click"].forEach(evt=>{
-  document.addEventListener(evt,unlockAudio,{once:true,passive:true});
+// V7: packaged WAV audio instead of Web Audio oscillators.
+const sliderSounds=Array.from({length:10},(_,i)=>{
+  const a=new Audio(`audio/ass-step-${i}-v7.wav`);
+  a.preload="auto";
+  a.volume=0.72;
+  return a;
 });
+let audioPrimed=false;
+
+function primeSliderAudio(){
+  if(audioPrimed)return;
+  audioPrimed=true;
+
+  // Prime one real media element during the user's gesture.
+  const a=sliderSounds[0];
+  const oldVolume=a.volume;
+  a.volume=0.001;
+  const promise=a.play();
+  if(promise && promise.then){
+    promise.then(()=>{
+      a.pause();
+      a.currentTime=0;
+      a.volume=oldVolume;
+    }).catch(()=>{
+      a.volume=oldVolume;
+      audioPrimed=false;
+    });
+  }else{
+    a.pause();
+    a.currentTime=0;
+    a.volume=oldVolume;
+  }
+}
+
+function playSliderSound(value){
+  const a=sliderSounds[value];
+  if(!a)return;
+  try{
+    a.pause();
+    a.currentTime=0;
+    a.volume=0.72;
+    const promise=a.play();
+    if(promise && promise.catch)promise.catch(()=>{});
+  }catch(e){}
+}
+
+// Prime media playback from the earliest direct user gesture.
+document.addEventListener("touchstart",primeSliderAudio,{once:true,passive:true});
+document.addEventListener("pointerdown",primeSliderAudio,{once:true,passive:true});
+document.addEventListener("click",primeSliderAudio,{once:true,passive:true});
 
 inputs.forEach((input,i)=>{
-  // Also unlock directly on the control for older mobile WebKit.
-  ["pointerdown","touchstart","mousedown","keydown"].forEach(evt=>{
-    input.addEventListener(evt,unlockAudio,{passive:true});
-  });
+  input.addEventListener("touchstart",primeSliderAudio,{passive:true});
+  input.addEventListener("pointerdown",primeSliderAudio,{passive:true});
+  input.addEventListener("mousedown",primeSliderAudio,{passive:true});
+  input.addEventListener("keydown",primeSliderAudio);
+
   input.addEventListener("input",()=>{
     values[i]=parseInt(input.value,10);
     render();
-    playSliderBlip(i,values[i]);
-  });
-  input.addEventListener("change",()=>{
-    values[i]=parseInt(input.value,10);
-    render();
-    playSliderBlip(i,values[i]);
+    playSliderSound(values[i]);
   });
 });
 const shareButton=document.getElementById("shareButton");

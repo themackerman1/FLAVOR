@@ -1,0 +1,24 @@
+{
+  "id": "./?ass-v7",
+  "name": "A.S.S. \u2014 Atmospheric Severity Score",
+  "short_name": "A.S.S.",
+  "start_url": "./?ass-v7",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#070410",
+  "theme_color": "#080414",
+  "icons": [
+    {
+      "src": "ass-nyc-app-192-v7.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "ass-nyc-app-512-v7.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
