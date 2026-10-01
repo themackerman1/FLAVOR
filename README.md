@@ -1,11 +1,12 @@
-# A.S.S. — Synthwave NYC Paranormal Edition
+# A.S.S. — Streamlined NYC Synthwave Edition
 
-GitHub Pages-ready static build.
+A cleaner GitHub Pages build with one canonical NYC synthwave masthead.
 
-- New NYC synthwave/paranormal masthead
-- Neon magenta/cyan/sunset UI
-- Three live controls: Amount, Smell, Sound
-- 1,000 paranormal response records
-- TRANSMIT SCORE native sharing / clipboard fallback
-- No decorative slime-drip layer
-- Responsive mobile layout
+Layout:
+1. Masthead
+2. Amount / Smell / Sound
+3. A.S.S. score + containment result
+4. Transmit Score
+
+Typography is intentionally reduced to a simple sans-serif hierarchy. Decorative panel chrome,
+micro-labels, slime, and competing display styles have been minimized.
