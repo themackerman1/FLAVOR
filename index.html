@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#080414">
-<meta name="ass-build" content="experience-redesign-v8-root-audio">
+<meta name="ass-build" content="experience-redesign-v9-low-latency-audio">
 <title>A.S.S. — Atmospheric Severity Score</title>
 <link rel="icon" href="ass-nyc-favicon-v7.ico?v=7" sizes="any">
 <link rel="icon" type="image/png" sizes="32x32" href="ass-nyc-favicon-32-v7.png?v=7">
@@ -77,7 +77,7 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border:4px solid whit
 }
 </style>
 </head>
-<body data-build="experience-redesign-v8-root-audio">
+<body data-build="experience-redesign-v9-low-latency-audio">
 <main class="app">
   <header class="hero"><img src="masthead-nyc-synthwave.png" alt="A.S.S. Atmospheric Severity Score — NYC paranormal synthwave"></header>
 
@@ -123,63 +123,91 @@ function render(){
   resultDesc.textContent=r.description;
 }
 
-// V7: packaged WAV audio instead of Web Audio oscillators.
-const sliderSounds=Array.from({length:10},(_,i)=>{
-  const a=new Audio(`ass-step-${i}-v7.wav`);
-  a.preload="auto";
-  a.volume=0.72;
-  return a;
-});
-let audioPrimed=false;
+// V9: root-level WAV assets, decoded once for low-latency slider playback.
+const soundUrls=Array.from({length:10},(_,i)=>`ass-step-${i}-v7.wav`);
+let audioCtx=null;
+let soundBuffers=new Array(10).fill(null);
+let audioReady=false;
+let loadingAudio=null;
+let lastSoundAt=0;
+let lastSoundValue=-1;
 
-function primeSliderAudio(){
-  if(audioPrimed)return;
-  audioPrimed=true;
-
-  // Prime one real media element during the user's gesture.
-  const a=sliderSounds[0];
-  const oldVolume=a.volume;
-  a.volume=0.001;
-  const promise=a.play();
-  if(promise && promise.then){
-    promise.then(()=>{
-      a.pause();
-      a.currentTime=0;
-      a.volume=oldVolume;
-    }).catch(()=>{
-      a.volume=oldVolume;
-      audioPrimed=false;
-    });
-  }else{
-    a.pause();
-    a.currentTime=0;
-    a.volume=oldVolume;
+function ensureAudioContext(){
+  const AC=window.AudioContext||window.webkitAudioContext;
+  if(!AC)return null;
+  if(!audioCtx){
+    audioCtx=new AC({latencyHint:"interactive"});
   }
+  return audioCtx;
+}
+
+async function loadSliderSounds(){
+  if(audioReady)return;
+  if(loadingAudio)return loadingAudio;
+  const ctx=ensureAudioContext();
+  if(!ctx)return;
+
+  loadingAudio=Promise.all(soundUrls.map(async (url,i)=>{
+    const response=await fetch(url,{cache:"force-cache"});
+    if(!response.ok)throw new Error(`Audio ${response.status}: ${url}`);
+    const bytes=await response.arrayBuffer();
+    soundBuffers[i]=await ctx.decodeAudioData(bytes);
+  })).then(()=>{
+    audioReady=true;
+  }).catch(()=>{
+    // Keep the UI fully functional even if audio loading fails.
+    audioReady=false;
+    loadingAudio=null;
+  });
+  return loadingAudio;
+}
+
+function unlockAndLoadAudio(){
+  const ctx=ensureAudioContext();
+  if(!ctx)return;
+  if(ctx.state==="suspended")ctx.resume().catch(()=>{});
+  loadSliderSounds();
 }
 
 function playSliderSound(value){
-  const a=sliderSounds[value];
-  if(!a)return;
-  try{
-    a.pause();
-    a.currentTime=0;
-    a.volume=0.72;
-    const promise=a.play();
-    if(promise && promise.catch)promise.catch(()=>{});
-  }catch(e){}
+  const ctx=ensureAudioContext();
+  if(!ctx)return;
+
+  // Don't stack duplicate input events from the same physical slider position.
+  const nowMs=performance.now();
+  if(value===lastSoundValue && nowMs-lastSoundAt<28)return;
+  lastSoundValue=value;
+  lastSoundAt=nowMs;
+
+  if(ctx.state==="suspended"){
+    ctx.resume().catch(()=>{});
+    return;
+  }
+  const buffer=soundBuffers[value];
+  if(!buffer){
+    loadSliderSounds();
+    return;
+  }
+
+  // BufferSource creation is cheap and starts immediately—no media seeking/play queue.
+  const source=ctx.createBufferSource();
+  const gain=ctx.createGain();
+  source.buffer=buffer;
+  gain.gain.value=0.82;
+  source.connect(gain);
+  gain.connect(ctx.destination);
+  source.start(0);
 }
 
-// Prime media playback from the earliest direct user gesture.
-document.addEventListener("touchstart",primeSliderAudio,{once:true,passive:true});
-document.addEventListener("pointerdown",primeSliderAudio,{once:true,passive:true});
-document.addEventListener("click",primeSliderAudio,{once:true,passive:true});
+// Start decoding as soon as the first genuine interaction occurs.
+["pointerdown","touchstart","mousedown","keydown"].forEach(evt=>{
+  document.addEventListener(evt,unlockAndLoadAudio,{once:true,passive:evt!=="keydown"});
+});
 
 inputs.forEach((input,i)=>{
-  input.addEventListener("touchstart",primeSliderAudio,{passive:true});
-  input.addEventListener("pointerdown",primeSliderAudio,{passive:true});
-  input.addEventListener("mousedown",primeSliderAudio,{passive:true});
-  input.addEventListener("keydown",primeSliderAudio);
-
+  ["pointerdown","touchstart","mousedown","keydown"].forEach(evt=>{
+    input.addEventListener(evt,unlockAndLoadAudio,{passive:evt!=="keydown"});
+  });
   input.addEventListener("input",()=>{
     values[i]=parseInt(input.value,10);
     render();
