@@ -1,10 +1,11 @@
-# A.S.S. — Typography Redesign V2 Final
-Visible changes:
-- Slider subheadlines removed
-- Slider labels compact uppercase
-- Slider numbers 22px
-- A.S.S. code 38–56px
-- Result headline 17px inline with emoji
-- Result body 13px, left aligned
-- Result card made much shorter
-Build marker: type-redesign-v2-final
+# A.S.S. — Experience Redesign V3
+
+Complete interface rebuild:
+- Masthead is the only large visual hero
+- One stacked Spectral Analyzer instead of three card modules
+- Horizontal Amount / Smell / Sound channels
+- Compact A.S.S. code beside classification
+- Containment description becomes a clean terminal strip
+- One restrained Transmit Score action
+- No slime, caution bars, nested chrome panels, or slider subheads
+- Same 1,000-result database and exact 919 / 989 special results
