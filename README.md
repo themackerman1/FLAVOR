@@ -1,1 +1,1 @@
-A.S.S. Christmas V16: All 1,000 result headlines simplified to natural, unhyphenated Christmas titles. Existing special Easter eggs 919 and 989 remain unchanged. Descriptions, layout, blinking Christmas lights, and root-level WAV audio are preserved.
+Christmas V17: 100 hand-written Christmas song/saying fart puns plus 900 simple, complete Christmas-themed stink/fart titles. All 1,000 unique; no hyphenated modifiers. Original 919 and 989 special results retained. Existing descriptions, blinking lights, simplified layout and root WAV audio preserved.
