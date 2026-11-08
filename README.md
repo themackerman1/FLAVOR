@@ -1,10 +1,1 @@
-# A.S.S. — V10 Native Audio Pool
-
-- No Web Audio playback.
-- Ten WAV files remain at repository root.
-- Four preloaded native Audio players per pitch.
-- Round-robin playback avoids seek/reset contention during rapid dragging.
-- Same-value duplicate events inside 24ms are suppressed.
-- Existing icons, interface, 1,000 results, special scores, and sharing are unchanged.
-
-Deploy the ZIP contents directly into the FLAVOR repository root.
+A.S.S. Christmas Edition V13. Pure CSS/DOM blinking Christmas lights around all four viewport edges; no images. 1,000 unique Christmas-themed results and descriptions, with original 919 and 989 easter eggs preserved. V10 native WAV pool retained; WAV files at root. Deploy all ZIP contents to GitHub Pages root.
