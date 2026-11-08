@@ -1,1 +1,1 @@
-A.S.S. Christmas Edition V13. Pure CSS/DOM blinking Christmas lights around all four viewport edges; no images. 1,000 unique Christmas-themed results and descriptions, with original 919 and 989 easter eggs preserved. V10 native WAV pool retained; WAV files at root. Deploy all ZIP contents to GitHub Pages root.
+A.S.S. Christmas V16: All 1,000 result headlines simplified to natural, unhyphenated Christmas titles. Existing special Easter eggs 919 and 989 remain unchanged. Descriptions, layout, blinking Christmas lights, and root-level WAV audio are preserved.
